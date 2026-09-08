@@ -1,0 +1,104 @@
+<section class="score-page" [class.leaving]="isLeaving">
+  <div class="score-shell">
+
+    <header class="brand-banner">
+      <div class="brand-left">
+        <div class="eyebrow">EU ESPR · AHEAD OF THE 2027 DELEGATED ACT</div>
+        <div class="brand-title">
+          <span class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
+                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"
+              />
+              <path
+                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+          <span>BluWin × Reput.ai</span>
+        </div>
+      </div>
+      <div class="banner-label">DPP<br />READINESS<br />SCAN</div>
+    </header>
+    @if (loadError) {
+  <p class="error-message">{{ loadError }}</p>
+}
+    <main class="score-card">
+     <div class="gauge-block gauge-block--semi">
+  <svg class="gauge-semi" viewBox="0 0 200 120">
+    <defs>
+      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#e2725b" />   <!-- brand orange -->
+        <stop offset="100%" stop-color="#0f7a72" /> <!-- brand teal -->
+      </linearGradient>
+    </defs>
+
+    <!-- background track (full semicircle, light grey) -->
+    <path
+      class="gauge-track-semi"
+      d="M 20 100 A 80 80 0 0 1 180 100"
+    />
+
+    <!-- animated fill arc -->
+    <path
+      class="gauge-fill-semi"
+      d="M 20 100 A 80 80 0 0 1 180 100"
+      [style.strokeDasharray]="gaugeLength"
+      [style.strokeDashoffset]="gaugeOffset"
+      stroke="url(#gaugeGradient)"
+    />
+  </svg>
+
+  <div class="gauge-center gauge-center--semi">
+    <span class="gauge-percent">{{ readinessPercent }}%</span>
+    <span class="gauge-caption">READINESS</span>
+  </div>
+</div>
+
+      <h1 class="stage-label">{{ stageLabel }}</h1>
+      <p class="stage-description">{{ stageDescription }}</p>
+      <p class="scope-label">{{ scopeLabel }}</p>
+
+      <div class="category-list">
+        @for (row of categories; track row.label; let i = $index) {
+          <div class="category-row" [style.animationDelay.ms]="i * 60">
+            <span class="category-label">{{ row.label }}</span>
+            <div class="category-track">
+              <div
+                class="category-fill"
+                [class]="row.status"
+                [style.width.%]="gaugeAnimated ? row.percent : 0"
+              ></div>
+            </div>
+            <span class="category-status" [class]="row.status">{{ row.statusText }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="next-steps">
+        <h2>SUGGESTED NEXT STEPS</h2>
+        <ol>
+          @for (step of nextSteps; track step; let i = $index) {
+            <li>
+              <span class="step-number">{{ (i + 1).toString().padStart(2, '0') }}</span>
+              <span class="step-text">{{ step }}</span>
+            </li>
+          }
+        </ol>
+      </div>
+
+      <div class="action-row">
+        <button type="button" class="retake-btn" (click)="onRetake()">
+          Retake
+        </button>
+
+        <button type="button" class="email-btn" (click)="onEmailReport()">
+          Email me the full report
+        </button>
+      </div>
+    </main>
+
+  </div>
+</section>

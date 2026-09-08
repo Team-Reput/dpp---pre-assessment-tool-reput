@@ -1,0 +1,109 @@
+<section class="contact-page">
+  <div class="contact-shell">
+
+    <header class="brand-banner">
+      <div class="brand-left">
+        <div class="eyebrow">
+          EU ESPR · AHEAD OF THE 2027 DELEGATED ACT
+        </div>
+
+        <div class="brand-title">
+          <span class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+
+          <span>BluWin × Reput.ai</span>
+        </div>
+      </div>
+
+      <div class="banner-label">
+        DPP<br />
+        READINESS<br />
+        SCAN
+      </div>
+    </header>
+
+    <main class="contact-card">
+      <div class="progress-track">
+        @for (step of steps; track step) {
+          <span class="progress-segment" [class.active]="step === currentStep"></span>
+        }
+      </div>
+
+      <div class="step-meta">
+        <span class="step-label">STEP {{ currentStep }} / {{ totalSteps }}</span>
+        <span class="section-badge">CONTACT</span>
+      </div>
+
+      <div class="content-block">
+        <h1>Let's get your readiness report ready</h1>
+        <p class="description">
+          Tell us where to send it — a BluWin colleague in your region will follow up too.
+        </p>
+
+
+        @if (submitError) {
+  <p class="error-message">{{ submitError }}</p>
+}
+        <form [formGroup]="contactForm" class="contact-form" (ngSubmit)="onContinue()">
+          <div class="field-group">
+            <label for="fullName">Full name</label>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              placeholder="Your name"
+            />
+          </div>
+
+          <div class="field-group">
+            <label for="company">Company</label>
+            <input
+              id="company"
+              type="text"
+              formControlName="company"
+              placeholder="Facility / company name"
+            />
+          </div>
+
+          <div class="field-group">
+            <label for="workEmail">Work email</label>
+            <input
+              id="workEmail"
+              type="email"
+              formControlName="workEmail"
+              placeholder="you@company.com"
+            />
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="back-btn" (click)="onBack()">
+              <span aria-hidden="true">←</span> Back
+            </button>
+
+            <button type="submit" class="continue-btn" [disabled]="isSubmitting">
+  @if (!isSubmitting) {
+    <span>Continue</span>
+  } @else {
+    <span>Submitting...</span>
+  }
+</button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+  </div>
+</section>

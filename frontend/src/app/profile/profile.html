@@ -1,0 +1,178 @@
+<section class="step-page">
+  <div class="step-shell">
+
+    <header class="brand-banner">
+      <div class="brand-left">
+        <div class="eyebrow">EU ESPR · AHEAD OF THE 2027 DELEGATED ACT</div>
+        <div class="brand-title">
+          <span class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
+                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"
+              />
+              <path
+                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+          <span>BluWin × Reput.ai</span>
+        </div>
+      </div>
+      <div class="banner-label">DPP<br />READINESS<br />SCAN</div>
+    </header>
+
+    <main class="step-card">
+      <div class="progress-track">
+        @for (step of steps; track step) {
+          <span class="progress-segment" [class.active]="step === currentStep"></span>
+        }
+      </div>
+
+      <div class="step-meta">
+        <span class="step-label">STEP {{ currentStep }} / {{ totalSteps }}</span>
+        <span class="section-badge">PROFILE</span>
+      </div>
+
+      <div class="content-block">
+        <h1>A little about your facility</h1>
+        <p class="description">This helps us calibrate the readiness benchmark to your segment.</p>
+
+        @if (submitError) {
+  <p class="error-message">{{ submitError }}</p>
+}
+
+        <form [formGroup]="form" class="profile-form">
+
+          <div class="field-group">
+            <label>What are you assessing?</label>
+
+            <div class="radio-card-group">
+              <button
+                type="button"
+                class="radio-card"
+                [class.selected]="form.get('assessingType')?.value === 'brand'"
+                (click)="selectAssessingType('brand')"
+              >
+                <span class="radio-dot" aria-hidden="true"></span>
+                <span class="radio-card-text">
+                  <strong>A brand, assessing a single product</strong>
+                  <span class="radio-card-desc">
+                    You want a DPP/QR readiness score for one product or product line
+                  </span>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                class="radio-card"
+                [class.selected]="form.get('assessingType')?.value === 'facility'"
+                (click)="selectAssessingType('facility')"
+              >
+                <span class="radio-dot" aria-hidden="true"></span>
+                <span class="radio-card-text">
+                  <strong>A facility, assessing full supply chain</strong>
+                  <span class="radio-card-desc">
+                    You want a readiness score across your whole operation (spinner, mill, manufacturer, etc.)
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          @if (isBrandSelected) {
+            <div class="field-group">
+              <label for="productOrCategory">Product or category being assessed</label>
+              <input
+                id="productOrCategory"
+                type="text"
+                formControlName="productOrCategory"
+                placeholder="e.g. Men's cotton crew-neck tee, SS26"
+              />
+            </div>
+          }
+
+          <div class="field-group">
+            <label for="primaryProductCategory">Primary product category</label>
+            <select id="primaryProductCategory" formControlName="primaryProductCategory">
+              <option value="" disabled>Select one</option>
+              @for (category of productCategories; track category) {
+                <option [value]="category">{{ category }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="annualExportVolume">Annual export volume</label>
+            <select id="annualExportVolume" formControlName="annualExportVolume">
+              <option value="" disabled>Select one</option>
+              @for (volume of exportVolumes; track volume) {
+                <option [value]="volume">{{ volume }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label>Primary export markets</label>
+            <div class="pill-toggle-group">
+              @for (market of exportMarketOptions; track market) {
+                <button
+                  type="button"
+                  class="pill-toggle"
+                  [class.selected]="isMarketSelected(market)"
+                  (click)="toggleExportMarket(market)"
+                >
+                  {{ market }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>How many production tiers are included in this assessment?</label>
+
+            <div class="radio-card-group">
+              @for (tier of tierOptions; track tier.value) {
+                <button
+                  type="button"
+                  class="radio-card"
+                  [class.selected]="form.get('productionTiers')?.value === tier.value"
+                  (click)="selectProductionTier(tier.value)"
+                >
+                  <span class="radio-dot" aria-hidden="true"></span>
+                  <span class="radio-card-text">
+                    <strong>{{ tier.title }}</strong>
+                    <span class="radio-card-desc">{{ tier.description }}</span>
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+
+        </form>
+
+        <div class="action-row">
+          <button type="button" class="back-btn" (click)="onBack()">
+            <span aria-hidden="true">←</span> Back
+          </button>
+
+          <button
+  type="button"
+  class="continue-btn"
+  [disabled]="form.invalid || isSubmitting"
+  (click)="onContinue()"
+>
+  @if (!isSubmitting) {
+    <span>Continue</span>
+    <span aria-hidden="true">→</span>
+  } @else {
+    <span>Submitting...</span>
+  }
+</button>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</section>
