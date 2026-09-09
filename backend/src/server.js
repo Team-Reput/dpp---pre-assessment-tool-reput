@@ -7,7 +7,13 @@ const contactRoutes = require('./routes/assessment-contact');
 
 const app = express();
 
-app.use(cors());
+//app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:4200', 'https://scan.dppreput.com'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use('/api/assessment-contact', contactRoutes);

@@ -254,7 +254,6 @@ const emailReport = async (req, res) => {
   try {
     const { ass_id } = req.body;
 
-    // Step 1: look up the contact's name + email using ass_id
     const contactResult = await pool.query(
       'SELECT full_name, email FROM dbo.assessment_contact WHERE ass_id = $1',
       [ass_id]
@@ -266,14 +265,12 @@ const emailReport = async (req, res) => {
 
     const { full_name, email } = contactResult.rows[0];
 
-    // Step 2: get the score for this assessment
     const scoreResult = await pool.query(
       'SELECT dbo.fn_usp_get_assessment_score($1) AS result',
       [ass_id]
     );
     const scoreData = scoreResult.rows[0].result.data;
 
-    // Step 3: build a simple email body from the score
     const sectionsHtml = Object.entries(scoreData.sections)
       .map(([key, value]) => `<li>${key.replace(/_/g, ' ')}: ${value}%</li>`)
       .join('');
@@ -287,7 +284,6 @@ const emailReport = async (req, res) => {
       <p>— BluWin × Reput.ai</p>
     `;
 
-    // Step 4: send the email
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
@@ -298,15 +294,19 @@ const emailReport = async (req, res) => {
       },
     });
 
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM,   // ⬅ sent FROM your Gmail (the .env one)
-       to: email,                      // ⬅ sent TO whoever filled the Contact form — fetched from the database
-      
+    // Respond to the user immediately — don't make them wait for Gmail's SMTP handshake
+    res.status(200).json({ success: true, status_code: 200, message: 'Report is being sent', data: { email } });
+
+    // Send the actual email AFTER responding — runs in the background
+    transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: email,
       subject: 'Your DPP Readiness Report',
       html: emailHtml,
+    }).catch((err) => {
+      console.error('Background email send failed:', err);
     });
 
-    res.status(200).json({ success: true, status_code: 200, message: 'Report emailed successfully', data: { email } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
