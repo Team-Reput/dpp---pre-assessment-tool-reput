@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef,signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScoreService } from './score.service';
 import { AssessmentStateService } from '../shared/assessment-state.service';
+import { DecimalPipe } from '@angular/common';
 
 
 interface CategoryRow {
@@ -14,13 +15,13 @@ interface CategoryRow {
 @Component({
   selector: 'app-score',
   standalone: true,
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './score.html',
   styleUrl: './score.scss',
 })
 export class Score implements OnInit {
   // These start as defaults and get overwritten once the API responds
-  readinessPercent = 0;
+  readinessPercent: number = 0;   // was likely just "= 0" already — no change needed if not explicitly typed
   stageLabel = 'Loading...';
   stageDescription = '';
   scopeLabel = 'Scope: full facility / supply chain readiness.';
@@ -32,7 +33,9 @@ export class Score implements OnInit {
   isLeaving = false;
   gaugeAnimated = false;
   loadError = '';
- 
+ isSendingEmail = signal(false);
+emailSentMessage = signal('');
+emailErrorMessage = signal('');
 
   constructor(
     private router: Router,
@@ -73,7 +76,7 @@ export class Score implements OnInit {
 private applyScoreResponse(response: any): void {
   const sections = response.data.sections;
 
-  this.readinessPercent = Math.round(response.data.overall_score);
+  this.readinessPercent = response.data.overall_score;   // already rounded to 1 decimal by the SQL function
 
   this.categories = [
     this.buildRow('Product Identification', sections.identification),
@@ -109,7 +112,7 @@ private applyScoreResponse(response: any): void {
       statusText = 'STRONG';
     } else if (percent >= 40) {
       status = 'score';
-      statusText = `${Math.round(percent)}%`;
+      statusText = `${percent.toFixed(1)}%`;
     } else {
       status = 'gap';
       statusText = 'GAP';
@@ -158,21 +161,35 @@ get gaugeOffset(): number {
     }, 380);
   }
 
-  onEmailReport(): void {
+onEmailReport(): void {
+  // Hard guard — ignore clicks while already sending, regardless of button state
+  if (this.isSendingEmail()) {
+    return;
+  }
+
   const assId = this.assessmentState.getAssId();
   if (!assId) return;
 
+  this.isSendingEmail.set(true);
+  this.emailSentMessage.set('');
+  this.emailErrorMessage.set('');
+
   this.scoreService.sendReportEmail(assId).subscribe({
     next: () => {
-      alert('Report sent! Check your inbox.');
+      this.isSendingEmail.set(false);
+      this.emailSentMessage.set('Your report has been sent — please check your inbox.');
+
+      setTimeout(() => {
+        this.emailSentMessage.set('');
+      }, 4000);
     },
-    error: (err: any) => {
+    error: (err) => {
+      this.isSendingEmail.set(false);
+      this.emailErrorMessage.set('Could not send the report. Please try again.');
       console.error('Email error:', err);
-      alert('Could not send the report. Please try again.');
     }
   });
 }
-
 
 
   // Builds next-step suggestions dynamically from whichever categories are still gaps

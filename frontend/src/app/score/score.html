@@ -52,10 +52,11 @@
   </svg>
 
   <div class="gauge-center gauge-center--semi">
-    <span class="gauge-percent">{{ readinessPercent }}%</span>
+    <span class="gauge-percent">{{ readinessPercent | number:'1.1-1' }}%</span>
     <span class="gauge-caption">READINESS</span>
   </div>
 </div>
+
 
       <h1 class="stage-label">{{ stageLabel }}</h1>
       <p class="stage-description">{{ stageDescription }}</p>
@@ -88,15 +89,25 @@
           }
         </ol>
       </div>
+@if (emailSentMessage()) {
+  <p class="email-success-message">{{ emailSentMessage() }}</p>
+}
+@if (emailErrorMessage()) {
+  <p class="email-error-message">{{ emailErrorMessage() }}</p>
+}
 
       <div class="action-row">
         <button type="button" class="retake-btn" (click)="onRetake()">
           Retake
         </button>
 
-        <button type="button" class="email-btn" (click)="onEmailReport()">
-          Email me the full report
-        </button>
+        <button type="button" class="email-btn" [disabled]="isSendingEmail()" (click)="onEmailReport()">
+  @if (!isSendingEmail()) {
+    <span>Email me the full report</span>
+  } @else {
+    <span>Sending...</span>
+  }
+</button>
       </div>
     </main>
 
