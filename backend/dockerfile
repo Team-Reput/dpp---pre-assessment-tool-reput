@@ -10,9 +10,6 @@ RUN npm ci --omit=dev
 # Copy the rest of the source
 COPY . .
 
-# If you have a TypeScript build step, uncomment:
-# RUN npm run build
-
 # ---- Stage 2: Run ----
 FROM node:20-alpine AS runtime
 
@@ -30,5 +27,5 @@ USER appuser
 
 EXPOSE 5000
 
-# Update this to your actual entry file (e.g. server.js, index.js, app.js, or dist/server.js if using TS)
-CMD ["node", "server.js"]
+# Your actual entry file is src/server.js, not server.js
+CMD ["node", "src/server.js"]
