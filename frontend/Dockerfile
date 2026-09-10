@@ -28,6 +28,5 @@ ENV PORT=4000
 
 EXPOSE 4000
 
-# Angular 18 SSR build output is typically dist/dpp_leads_dashboard/server/server.mjs
-# Update dpp_leads_dashboard below to match the "name" field in your angular.json / package.json
-CMD ["node", "dist/dpp_leads_dashboard/server/server.mjs"]
+# Your project name in angular.json is "frontend", so the build output lands in dist/frontend
+CMD ["node", "dist/frontend/server/server.mjs"]
