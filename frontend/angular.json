@@ -35,7 +35,7 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": []
+              "allowedHosts": ["scan.dppreput.com","localhost"]
             },
             "ssr": {
               "entry": "src/server.ts"
@@ -62,7 +62,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
-            
+ 
             },
             "development": {
               "optimization": false,
