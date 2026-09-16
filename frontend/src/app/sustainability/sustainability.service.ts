@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class SustainabilityService {
-  private apiUrl = 'http://localhost:5000/api/sustainability';
+  private apiUrl = `${environment.apiUrl}/sustainability`;
 
   constructor(private http: HttpClient) {}
 
