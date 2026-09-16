@@ -46,7 +46,7 @@
         <form [formGroup]="form" class="profile-form">
 
           <div class="field-group">
-            <label>What are you assessing?</label>
+            <label>What are you assessing? <span class="required-asterisk">*</span></label>
 
             <div class="radio-card-group">
               <button
@@ -83,7 +83,8 @@
 
           @if (isBrandSelected) {
             <div class="field-group">
-              <label for="productOrCategory">Product or category being assessed</label>
+                  <label for="productOrCategory">Product or category being assessed <span class="required-asterisk">*</span></label>
+
               <input
                 id="productOrCategory"
                 type="text"
@@ -94,7 +95,8 @@
           }
 
           <div class="field-group">
-            <label for="primaryProductCategory">Primary product category</label>
+              <label for="primaryProductCategory">Primary product category <span class="required-asterisk">*</span></label>
+
             <select id="primaryProductCategory" formControlName="primaryProductCategory">
               <option value="" disabled>Select one</option>
               @for (category of productCategories; track category) {
@@ -104,7 +106,8 @@
           </div>
 
           <div class="field-group">
-            <label for="annualExportVolume">Annual export volume</label>
+              <label for="annualExportVolume">Annual export volume <span class="required-asterisk">*</span></label>
+
             <select id="annualExportVolume" formControlName="annualExportVolume">
               <option value="" disabled>Select one</option>
               @for (volume of exportVolumes; track volume) {
@@ -130,7 +133,8 @@
           </div>
 
           <div class="field-group">
-            <label>How many production tiers are included in this assessment?</label>
+              <label>How many production tiers are included in this assessment? <span class="required-asterisk">*</span></label>
+
 
             <div class="radio-card-group">
               @for (tier of tierOptions; track tier.value) {

@@ -428,3 +428,7 @@ select {
   .radio-card { padding: 16px 16px; }
   .pill-toggle { padding: 8px 15px; font-size: 13px; }
 }
+.required-asterisk {
+  color: #e11d48; // or whatever your error/accent color is
+  margin-left: 2px;
+}

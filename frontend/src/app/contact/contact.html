@@ -59,7 +59,7 @@
 }
         <form [formGroup]="contactForm" class="contact-form" (ngSubmit)="onContinue()">
           <div class="field-group">
-            <label for="fullName">Full name</label>
+            <label for="fullName">Full name <span class="required-asterisk">*</span></label>
             <input
               id="fullName"
               type="text"
@@ -69,7 +69,7 @@
           </div>
 
           <div class="field-group">
-            <label for="company">Company</label>
+             <label for="company">Company <span class="required-asterisk">*</span></label>
             <input
               id="company"
               type="text"
@@ -79,7 +79,7 @@
           </div>
 
           <div class="field-group">
-            <label for="workEmail">Work email</label>
+           <label for="workEmail">Work email <span class="required-asterisk">*</span></label>
             <input
               id="workEmail"
               type="email"
