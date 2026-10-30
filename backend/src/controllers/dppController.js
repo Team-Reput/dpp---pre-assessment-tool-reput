@@ -284,6 +284,13 @@ const emailReport = async (req, res) => {
       <p>— BluWin × Reput.ai</p>
     `;
 
+    // Without SMTP_HOST nodemailer silently falls back to 127.0.0.1:587 (ECONNREFUSED inside the container)
+    const missingSmtp = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'].filter((k) => !process.env[k]);
+    if (missingSmtp.length > 0) {
+      console.error('Email not configured, missing env vars:', missingSmtp.join(', '));
+      return res.status(500).json({ success: false, status_code: 500, message: 'Email service is not configured', data: null });
+    }
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,

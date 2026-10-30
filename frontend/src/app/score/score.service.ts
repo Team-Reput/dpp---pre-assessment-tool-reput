@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ScoreService {
-  private apiUrl = 'http://localhost:5000/api/score';
+  private apiUrl = `${environment.apiUrl}/score`;
 
   constructor(private http: HttpClient) {}
 
@@ -18,6 +19,6 @@ export class ScoreService {
 
   // NEW — add this method here, inside ScoreService
   sendReportEmail(assId: number): Observable<any> {
-    return this.http.post('http://localhost:5000/api/email-report', { ass_id: assId });
+    return this.http.post(`${environment.apiUrl}/email-report`, { ass_id: assId });
   }
 }

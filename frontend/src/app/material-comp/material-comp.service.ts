@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MaterialCompService {
-  private apiUrl = 'http://localhost:5000/api/material-comp';
+  private apiUrl = `${environment.apiUrl}/material-comp`;
 
   constructor(private http: HttpClient) {}
 
