@@ -1,142 +1,109 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IdentificationService } from './identification.service';
-import { AssessmentStateService } from '../shared/assessment-state.service';
+import {
+  AssessmentStateService,
+  TECHNICAL_CATEGORIES,
+  SECTION_GUIDE,
+  HELP_NOTE,
+} from '../shared/assessment-state.service';
+import { ShirtDockComponent } from '../shared/shirt-dock/shirt-dock';
+
+export const DUMMY_DATA = {
+  eyebrow: 'A Tool for the Textile Industry',
+  brandLeft: 'BluWin',
+  brandRight: 'Reput.ai',
+  tag: 'DPP Readiness Scan',
+  catKey: 'identification',
+  category: TECHNICAL_CATEGORIES.find((c) => c.key === 'identification')!,
+  sectionGuide: SECTION_GUIDE['identification'],
+  helpNote: HELP_NOTE['identification'],
+};
 
 @Component({
   selector: 'app-identification',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ShirtDockComponent],
   templateUrl: './identification.html',
   styleUrl: './identification.scss',
 })
-export class Identification {
-  readonly totalSteps = 12;
-  readonly currentStep = 3;
-
-  form: FormGroup;
-  isSubmitting = false;
-  submitError = '';
-
-  // Maps the internal short value to the exact label shown on screen
-  readonly dataCollectedLabels: Record<string, string> = {
-    yes: 'Yes, we collect this',
-    partially: 'Partially',
-    'not-yet': 'Not yet',
-  };
-
-  readonly collectionOptions = [
-    {
-      value: 'yes',
-      title: 'Yes, we collect this',
-      description: 'Structured data exists and is current',
-    },
-    {
-      value: 'partially',
-      title: 'Partially',
-      description: 'Some data exists, incomplete or ad hoc',
-    },
-    {
-      value: 'not-yet',
-      title: 'Not yet',
-      description: 'No systematic data collection here',
-    },
-  ];
-
-  readonly systemOptions = [
-    'OEKO-TEX Standard 100 / STeP certificate',
-    'GOTS Transaction Certificate',
-    'Cradle to Cradle Material Health Certificate',
-    'ZDHC InCheck / MRSL conformance report',
-    'Higg FEM verified score report',
-    'Higg FSLM (social/labor) report',
-    'Bill of Lading / Commercial Invoice',
-    'Purchase Order / production docket',
-    'Internal system only',
-    'None yet',
-  ];
+export class Identification implements OnInit {
+  readonly data = DUMMY_DATA;
+  readonly catKey = 'identification';
+  readonly stepKey = 'cat:identification';
+  focusedIdx: number | null = null;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
-    private identificationService: IdentificationService,
-    private assessmentState: AssessmentStateService
-  ) {
-    this.form = this.fb.group({
-      dataCollected: ['', Validators.required],
-      systems: this.fb.control<string[]>([]),
-    });
+    public state: AssessmentStateService
+  ) {}
+
+  ngOnInit(): void {
+    this.state.ensureCategoryAnswers(this.catKey);
   }
 
-  get steps(): number[] {
-    return Array.from({ length: this.totalSteps }, (_, i) => i + 1);
+  get cat() {
+    return this.data.category;
   }
 
-  get showSystemsSection(): boolean {
-    const value = this.form.get('dataCollected')?.value;
-    return value === 'yes' || value === 'partially';
+  get items(): string[] {
+    return this.state.getCategoryItems(this.catKey);
   }
 
-  selectDataCollected(value: string): void {
-    this.form.get('dataCollected')?.setValue(value);
+  get answers(): (boolean | null)[] {
+    const cd = this.state.categoryData()[this.catKey];
+    const items = this.items;
+    if (!cd || !Array.isArray(cd.answers) || cd.answers.length !== items.length) {
+      return new Array(items.length).fill(null);
+    }
+    return cd.answers;
   }
 
-  toggleSystem(system: string): void {
-    const ctrl = this.form.get('systems');
-    const current: string[] = ctrl?.value ?? [];
-    const next = current.includes(system)
-      ? current.filter((s) => s !== system)
-      : [...current, system];
-    ctrl?.setValue(next);
+  get answeredCount(): number {
+    return this.answers.filter((v) => v !== null).length;
   }
 
-  isSystemSelected(system: string): boolean {
-    const current: string[] = this.form.get('systems')?.value ?? [];
-    return current.includes(system);
+  get progressPct(): number {
+    return this.items.length ? (this.answeredCount / this.items.length) * 100 : 0;
+  }
+
+  get navHint(): string {
+    const left = this.items.length - this.answeredCount;
+    return left ? `${left} skipped · counted as No` : 'All answered';
+  }
+
+  get showHelpNote(): boolean {
+    return this.answers.some((v) => v !== true);
+  }
+
+  get stepMeta() {
+    return this.state.getStepMeta(this.stepKey);
+  }
+
+  get segments(): number[] {
+    return Array.from({ length: this.stepMeta.total }, (_, i) => i);
+  }
+
+  formatNum(i: number): string {
+    return String(i + 1).padStart(2, '0');
+  }
+
+  setAnswer(index: number, val: boolean): void {
+    this.state.setCategoryAnswer(this.catKey, index, val);
+    const nextUnanswered = this.answers.findIndex((a, idx) => idx > index && a === null);
+    if (nextUnanswered !== -1) {
+      this.focusedIdx = nextUnanswered;
+      setTimeout(() => {
+        if (this.focusedIdx === nextUnanswered) this.focusedIdx = null;
+      }, 900);
+    }
   }
 
   onBack(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate([this.state.getBackRoute(this.stepKey)]);
   }
 
   onContinue(): void {
-    // Step 1: block submission if required fields are missing
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.submitError = 'Please select an option before continuing.';
-      return;
-    }
-
-    // Step 2: make sure we know which assessment this belongs to
-    const assId = this.assessmentState.getAssId();
-    if (!assId) {
-      this.submitError = 'Missing assessment ID — please start over from contact.';
-      return;
-    }
-
-    this.isSubmitting = true;
-    this.submitError = '';
-
-    // Step 3: build the payload
-    const payload = {
-      ass_id: assId,
-      status: this.dataCollectedLabels[this.form.value.dataCollected], // full label text
-      data: JSON.stringify(this.form.value.systems), // array → JSON string, e.g. '["GOTS Transaction Certificate"]'
-    };
-
-    // Step 4: send it to the backend
-    this.identificationService.saveIdentification(payload).subscribe({
-      next: (response) => {
-        this.isSubmitting = false;
-        console.log('Identification saved:', response);
-        this.router.navigate(['/material-comp']);
-      },
-      error: (err) => {
-        this.isSubmitting = false;
-        this.submitError = 'Something went wrong. Please try again.';
-        console.error('API error:', err);
-      }
-    });
+    this.router.navigate([this.state.getNextRoute(this.stepKey)]);
   }
 }

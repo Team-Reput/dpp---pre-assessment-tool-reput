@@ -1,109 +1,84 @@
-<section class="contact-page">
-  <div class="contact-shell">
+<div class="app">
+  <header class="brandbar">
+    <div class="brandbar-left">
+      <span class="eyebrow">{{ data.eyebrow }}</span>
+      <div class="collab">
+        <span class="logo-word">
+          <svg class="drop" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+            <path d="M9 1.5C9 1.5 2 9.2 2 14.2A7 7 0 0 0 16 14.2C16 9.2 9 1.5 9 1.5Z" stroke="#fff" stroke-width="1.6"/>
+            <path d="M6 15a3 3 0 0 0 3 2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ data.brandLeft }}
+        </span>
+        <span class="x">×</span>
+        <span class="logo-word">{{ data.brandRight }}</span>
+      </div>
+    </div>
+    <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
+  </header>
 
-    <header class="brand-banner">
-      <div class="brand-left">
-        <div class="eyebrow">
-          EU ESPR · AHEAD OF THE 2027 DELEGATED ACT
+  <main class="card" id="card">
+    <div class="rail" id="rail" hidden></div>
+    <div class="step-meta" id="stepMeta" hidden>
+      <span id="stepCounter"></span>
+      <span class="step-tag" id="stepTag"></span>
+    </div>
+    <div class="panel" id="panel">
+      <div class="screen enter">
+        <h1>{{ data.heading }}</h1>
+        <p class="sub">{{ data.subtitle }}</p>
+
+        <div class="assure">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
+            <path d="M6.8 10.3 9 12.4 13.4 7.8" stroke="#039297" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>{{ data.assureText }}</span>
         </div>
 
-        <div class="brand-title">
-          <span class="drop-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
-
-          <span>BluWin × Reput.ai</span>
-        </div>
-      </div>
-
-      <div class="banner-label">
-        DPP<br />
-        READINESS<br />
-        SCAN
-      </div>
-    </header>
-
-    <main class="contact-card">
-      <div class="progress-track">
-        @for (step of steps; track step) {
-          <span class="progress-segment" [class.active]="step === currentStep"></span>
-        }
-      </div>
-
-      <div class="step-meta">
-        <span class="step-label">STEP {{ currentStep }} / {{ totalSteps }}</span>
-        <span class="section-badge">CONTACT</span>
-      </div>
-
-      <div class="content-block">
-        <h1>Let's get your readiness report ready</h1>
-        <p class="description">
-          Tell us where to send it — a BluWin colleague in your region will follow up too.
-        </p>
-
-
-        @if (submitError) {
-  <p class="error-message">{{ submitError }}</p>
-}
-        <form [formGroup]="contactForm" class="contact-form" (ngSubmit)="onContinue()">
-          <div class="field-group">
-            <label for="fullName">Full name <span class="required-asterisk">*</span></label>
+        <div class="field-row">
+          <div class="field" id="f-name" [class.bad]="badName">
+            <label for="c-name">{{ data.fields.name.label }}</label>
             <input
-              id="fullName"
               type="text"
-              formControlName="fullName"
-              placeholder="Your name"
-            />
+              id="c-name"
+              [placeholder]="data.fields.name.placeholder"
+              autocomplete="name"
+              [(ngModel)]="name"
+              (input)="badName = false" />
+            <div class="err">{{ data.fields.name.err }}</div>
           </div>
 
-          <div class="field-group">
-             <label for="company">Company <span class="required-asterisk">*</span></label>
+          <div class="field" id="f-company" [class.bad]="badCompany">
+            <label for="c-company">{{ data.fields.company.label }}</label>
             <input
-              id="company"
               type="text"
-              formControlName="company"
-              placeholder="Facility / company name"
-            />
+              id="c-company"
+              [placeholder]="data.fields.company.placeholder"
+              autocomplete="organization"
+              [(ngModel)]="company"
+              (input)="badCompany = false" />
+            <div class="err">{{ data.fields.company.err }}</div>
           </div>
 
-          <div class="field-group">
-           <label for="workEmail">Work email <span class="required-asterisk">*</span></label>
+          <div class="field" id="f-email" [class.bad]="badEmail">
+            <label for="c-email">{{ data.fields.email.label }}</label>
             <input
-              id="workEmail"
               type="email"
-              formControlName="workEmail"
-              placeholder="you@company.com"
-            />
+              id="c-email"
+              [placeholder]="data.fields.email.placeholder"
+              autocomplete="email"
+              [(ngModel)]="email"
+              (input)="badEmail = false" />
+            <div class="err">{{ data.fields.email.err }}</div>
           </div>
+        </div>
 
-          <div class="action-row">
-            <button type="button" class="back-btn" (click)="onBack()">
-              <span aria-hidden="true">←</span> Back
-            </button>
-
-            <button type="submit" class="continue-btn" [disabled]="isSubmitting">
-  @if (!isSubmitting) {
-    <span>Continue</span>
-  } @else {
-    <span>Submitting...</span>
-  }
-</button>
-          </div>
-        </form>
+        <div class="nav">
+          <button type="button" class="btn btn-ghost" (click)="onBack()">← Back</button>
+          <button type="button" class="btn btn-primary" (click)="submitContact()">Continue →</button>
+        </div>
       </div>
-    </main>
-
-  </div>
-</section>
+    </div>
+  </main>
+</div>

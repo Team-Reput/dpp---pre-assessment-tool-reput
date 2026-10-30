@@ -1,85 +1,118 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContactService } from './contact.service';
-import { AssessmentStateService } from '../shared/assessment-state.service';
+import { AssessmentStateService, ASSURE } from '../shared/assessment-state.service';
+
+export const DUMMY_DATA = {
+  eyebrow: 'A Tool for the Textile Industry',
+  brandLeft: 'BluWin',
+  brandRight: 'Reput.ai',
+  tag: 'DPP Readiness Scan',
+  heading: 'Where should we send your results?',
+  subtitle: 'Tell us who you are and we’ll send your readiness summary when you finish.',
+  assureText: ASSURE.contact,
+  fields: {
+    name: {
+      label: 'Full name',
+      placeholder: 'Your name',
+      err: 'Please add your name.',
+    },
+    company: {
+      label: 'Company',
+      placeholder: 'Company or facility name',
+      err: 'Please add your company.',
+    },
+    email: {
+      label: 'Work email',
+      placeholder: 'you@company.com',
+      err: 'Please use a valid email address.',
+    },
+  },
+  sampleContact: {
+    name: 'alice',
+    company: 'xyzz',
+    email: 'alice@xyzz.in',
+  },
+};
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   styleUrl: './contact.scss',
   templateUrl: './contact.html',
 })
 export class Contact {
-  // Used by the progress bar in the template ("STEP 1 / 12")
-  readonly totalSteps = 12;
-  readonly currentStep = 1;
+  readonly data = DUMMY_DATA;
 
-  // Holds the 3 form fields and their validation rules
-  contactForm: FormGroup;
+  name = '';
+  company = '';
+  email = '';
 
-  // True while the API call is in flight — disables the button, shows "Submitting..."
+  badName = false;
+  badCompany = false;
+  badEmail = false;
   isSubmitting = false;
-
-  // Holds an error message to show the user if something goes wrong
-  submitError = '';
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
-    private contactService: ContactService,          // calls the backend /api/assessment-contact endpoint
-    private assessmentState: AssessmentStateService   // stores ass_id so later steps can reuse it
+    private contactService: ContactService,
+    private assessmentState: AssessmentStateService
   ) {
-    // Define form fields and validation rules
-    this.contactForm = this.fb.group({
-      fullName: ['', Validators.required],
-      company: ['', Validators.required],
-      workEmail: ['', [Validators.required, Validators.email]],
-    });
+    const existing = this.assessmentState.contact();
+    this.name = existing.name || '';
+    this.company = existing.company || '';
+    this.email = existing.email || '';
   }
 
-  // Used by the template to render one progress-bar segment per step
-  get steps(): number[] {
-    return Array.from({ length: this.totalSteps }, (_, i) => i + 1);
-  }
-
-  // Navigate back to the previous screen
   onBack(): void {
-    this.router.navigate(['/start-assessment']);
+    this.router.navigate(['/espr-dpp']);
   }
 
-  // Called when the user clicks "Continue"
-  onContinue(): void {
-    // Step 1: block submission if required fields are empty/invalid
-    if (this.contactForm.invalid) {
-      this.contactForm.markAllAsTouched(); // shows red/error styling on empty fields
+  submitContact(): void {
+    const trimmedName = this.name.trim();
+    const trimmedCompany = this.company.trim();
+    const trimmedEmail = this.email.trim();
+
+    const okName = trimmedName.length > 1;
+    const okCompany = trimmedCompany.length > 1;
+    const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmedEmail);
+
+    this.badName = !okName;
+    this.badCompany = !okCompany;
+    this.badEmail = !okEmail;
+
+    this.assessmentState.setContact({
+      name: trimmedName,
+      company: trimmedCompany,
+      email: trimmedEmail,
+    });
+
+    if (!okName || !okCompany || !okEmail) {
       return;
     }
 
     this.isSubmitting = true;
-    this.submitError = '';
-
-    // Step 2: build the payload — keys must match what the backend controller expects
     const payload = {
-      full_name: this.contactForm.value.fullName,
-      company: this.contactForm.value.company,
-      email: this.contactForm.value.workEmail,
+      full_name: trimmedName,
+      company: trimmedCompany,
+      email: trimmedEmail,
     };
 
-    // Step 3: send it to the backend
     this.contactService.saveContact(payload).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        // Save the returned ass_id so Profile (and every later step) can link to this record
-        this.assessmentState.setAssId(response.data.ass_id);
-        this.router.navigate(['/profile']); // move to next step only after success
+        if (response?.data?.ass_id) {
+          this.assessmentState.setAssId(response.data.ass_id);
+        }
+        this.router.navigate(['/profile']);
       },
-      error: (err) => {
+      error: () => {
         this.isSubmitting = false;
-        this.submitError = 'Something went wrong. Please try again.';
-        console.error('API error:', err);
-      }
+        this.router.navigate(['/profile']);
+      },
     });
   }
 }

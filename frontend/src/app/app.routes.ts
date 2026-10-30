@@ -1,19 +1,23 @@
 import { Routes } from '@angular/router';
 import { StartAssessmentComponent } from './start-assessment/start-assessment';
+import { EsprDppComponent } from './espr-dpp/espr-dpp';
 import { Contact } from './contact/contact';
 import { Profile } from './profile/profile';
+import { TierFollow } from './tier-follow/tier-follow';
+import { Market } from './market/market';
 import { Identification } from './identification/identification';
 import { MaterialComp } from './material-comp/material-comp';
-import { MaterialOrigin } from './material-origin/material-origin';
-import { SupplyChain } from './supply-chain/supply-chain';
-import { Traceability } from './traceability/traceability';
-import { Sustainability } from './sustainability/sustainability';
+import { Durability } from './durability/durability';
+import { Reusability } from './reusability/reusability';
+import { Recyclability } from './recyclability/recyclability';
+import { EnvFootprint } from './env-footprint/env-footprint';
+import { ResourceUse } from './resource-use/resource-use';
+import { WasteEol } from './waste-eol/waste-eol';
+import { DataQuality } from './data-quality/data-quality';
 import { Compliance } from './compliance/compliance';
-import { SocialLabor } from './social-labor/social-labor';
 import { Structure } from './structure/structure';
-import { ExtendedData } from './extended-data/extended-data';
+import { Positioning } from './positioning/positioning';
 import { Score } from './score/score';
-import { EsprDppComponent } from './espr-dpp/espr-dpp';
 
 export const routes: Routes = [
   {
@@ -25,7 +29,6 @@ export const routes: Routes = [
     path: 'start-assessment',
     component: StartAssessmentComponent,
   },
-
   {
     path: 'espr-dpp',
     component: EsprDppComponent,
@@ -39,6 +42,14 @@ export const routes: Routes = [
     component: Profile,
   },
   {
+    path: 'tier-follow',
+    component: TierFollow,
+  },
+  {
+    path: 'market',
+    component: Market,
+  },
+  {
     path: 'identification',
     component: Identification,
   },
@@ -46,40 +57,48 @@ export const routes: Routes = [
     path: 'material-comp',
     component: MaterialComp,
   },
-{
-    path: 'material-origin',
-    component: MaterialOrigin,
+  {
+    path: 'durability',
+    component: Durability,
   },
   {
-    path: 'supply-chain',
-    component: SupplyChain,
+    path: 'reusability',
+    component: Reusability,
   },
   {
-    path: 'traceability',
-    component: Traceability,
+    path: 'recyclability',
+    component: Recyclability,
   },
   {
-    path: 'sustainability',
-    component: Sustainability,
+    path: 'env-footprint',
+    component: EnvFootprint,
+  },
+  {
+    path: 'resource-use',
+    component: ResourceUse,
+  },
+  {
+    path: 'waste-eol',
+    component: WasteEol,
+  },
+  {
+    path: 'data-quality',
+    component: DataQuality,
   },
   {
     path: 'compliance',
     component: Compliance,
   },
   {
-    path: 'social-labor',
-    component: SocialLabor,
-  },
-  {
-    path: 'extended-data',
-    component: ExtendedData,
-  },
-  {
     path: 'structure',
     component: Structure,
   },
   {
+    path: 'positioning',
+    component: Positioning,
+  },
+  {
     path: 'score',
     component: Score,
-  }
+  },
 ];

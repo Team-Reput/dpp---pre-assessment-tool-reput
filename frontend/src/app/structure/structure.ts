@@ -1,102 +1,130 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AssessmentStateService,
+  TECHNICAL_CATEGORIES,
+  SECTION_GUIDE,
+  HELP_NOTE,
+} from '../shared/assessment-state.service';
+import { ShirtDockComponent } from '../shared/shirt-dock/shirt-dock';
 import { StructureService } from './structure.service';
-import { ScoreService } from '../score/score.service';   // ⬅ NEW
-import { AssessmentStateService } from '../shared/assessment-state.service';
+
+export const DUMMY_DATA = {
+  eyebrow: 'A Tool for the Textile Industry',
+  brandLeft: 'BluWin',
+  brandRight: 'Reput.ai',
+  tag: 'DPP Readiness Scan',
+  catKey: 'data_structure',
+  category: TECHNICAL_CATEGORIES.find((c) => c.key === 'data_structure')!,
+  sectionGuide: SECTION_GUIDE['data_structure'],
+  helpNote: HELP_NOTE['data_structure'],
+};
 
 @Component({
   selector: 'app-structure',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ShirtDockComponent],
   templateUrl: './structure.html',
   styleUrl: './structure.scss',
 })
-export class Structure {
-  readonly totalSteps = 12;
-  readonly currentStep = 12;
-
-  form: FormGroup;
-  isSubmitting = false;
-  submitError = '';
-
-  readonly options = [
-    { value: 'one-central-system', title: 'One central system', description: 'Certification and product data live in a single source of truth' },
-    { value: 'scattered', title: 'Scattered across systems', description: 'Data sits with different certifiers, spreadsheets, or teams' },
-    { value: 'partly-centralized', title: 'Partly centralized', description: 'Some categories consolidated, others still fragmented' },
-    { value: 'not-sure', title: 'Not sure', description: 'No clear view of where all the data currently lives' },
-  ];
+export class Structure implements OnInit {
+  readonly data = DUMMY_DATA;
+  readonly catKey = 'data_structure';
+  readonly stepKey = 'cat:data_structure';
+  focusedIdx: number | null = null;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
-    private structureService: StructureService,
-    private scoreService: ScoreService,               // ⬅ NEW
-    private assessmentState: AssessmentStateService
-  ) {
-    this.form = this.fb.group({
-      dataLocation: ['', Validators.required],
-    });
+    public state: AssessmentStateService,
+    private structureService: StructureService
+  ) {}
+
+  ngOnInit(): void {
+    this.state.ensureCategoryAnswers(this.catKey);
   }
 
-  get steps(): number[] {
-    return Array.from({ length: this.totalSteps }, (_, i) => i + 1);
+  get cat() {
+    return this.data.category;
   }
 
-  select(value: string): void {
-    this.form.get('dataLocation')?.setValue(value);
+  get items(): string[] {
+    return this.state.getCategoryItems(this.catKey);
+  }
+
+  get answers(): (boolean | null)[] {
+    const cd = this.state.categoryData()[this.catKey];
+    const items = this.items;
+    if (!cd || !Array.isArray(cd.answers) || cd.answers.length !== items.length) {
+      return new Array(items.length).fill(null);
+    }
+    return cd.answers;
+  }
+
+  get answeredCount(): number {
+    return this.answers.filter((v) => v !== null).length;
+  }
+
+  get progressPct(): number {
+    return this.items.length ? (this.answeredCount / this.items.length) * 100 : 0;
+  }
+
+  get navHint(): string {
+    const left = this.items.length - this.answeredCount;
+    return left ? `${left} skipped · counted as No` : 'All answered';
+  }
+
+  get showHelpNote(): boolean {
+    return this.answers.some((v) => v !== true);
+  }
+
+  get stepMeta() {
+    return this.state.getStepMeta(this.stepKey);
+  }
+
+  get segments(): number[] {
+    return Array.from({ length: this.stepMeta.total }, (_, i) => i);
+  }
+
+  formatNum(i: number): string {
+    return String(i + 1).padStart(2, '0');
+  }
+
+  setAnswer(index: number, val: boolean): void {
+    this.state.setCategoryAnswer(this.catKey, index, val);
+    const nextUnanswered = this.answers.findIndex((a, idx) => idx > index && a === null);
+    if (nextUnanswered !== -1) {
+      this.focusedIdx = nextUnanswered;
+      setTimeout(() => {
+        if (this.focusedIdx === nextUnanswered) this.focusedIdx = null;
+      }, 900);
+    }
   }
 
   onBack(): void {
-    this.router.navigate(['/extended-data']);
+    this.router.navigate([this.state.getBackRoute(this.stepKey)]);
   }
 
   onContinue(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.submitError = 'Please select an option before continuing.';
-      return;
-    }
-
-    const assId = this.assessmentState.getAssId();
-    if (!assId) {
-      this.submitError = 'Missing assessment ID — please start over from contact.';
-      return;
-    }
-
-    this.isSubmitting = true;
-    this.submitError = '';
-
-    const selectedOption = this.options.find(o => o.value === this.form.value.dataLocation);
-
-    const payload = {
-      ass_id: assId,
-      structure: selectedOption ? selectedOption.title : this.form.value.dataLocation,
-    };
-
-    // Step 1: save the structure answer
-    this.structureService.saveStructure(payload).subscribe({
-      next: () => {
-        // Step 2: once saved, immediately fetch the score (structure feeds into scoring,
-        // so we call the score API only AFTER the save confirms it's in the database)
-        this.scoreService.getScore(assId).subscribe({
-          next: (scoreResponse) => {
-            this.isSubmitting = false;
-            this.assessmentState.setScoreData(scoreResponse); // cache it for the Score screen
-            this.router.navigate(['/score']); // navigate only once the score is ready
+    const assId = this.state.getAssId();
+    if (assId) {
+      const yesCount = this.answers.filter((a) => a === true).length;
+      const ratio = this.items.length ? yesCount / this.items.length : 0;
+      const format = ratio >= 0.6 ? 'Structured digital' : ratio > 0 ? 'Unstructured digital' : 'Mostly on paper';
+      this.structureService
+        .saveStructure({
+          ass_id: assId,
+          structure: format,
+        })
+        .subscribe({
+          next: (res) => {
+            if (res?.data) {
+              this.state.setScoreData(res.data);
+            }
           },
-          error: (err) => {
-            this.isSubmitting = false;
-            this.submitError = 'Could not calculate your score. Please try again.';
-            console.error('Score API error:', err);
-          }
+          error: () => {},
         });
-      },
-      error: (err) => {
-        this.isSubmitting = false;
-        this.submitError = 'Something went wrong. Please try again.';
-        console.error('API error:', err);
-      }
-    });
+    }
+    this.router.navigate([this.state.getNextRoute(this.stepKey)]);
   }
 }

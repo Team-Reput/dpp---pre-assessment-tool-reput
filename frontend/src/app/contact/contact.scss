@@ -1,433 +1,320 @@
 :host {
+  --teal-bright: #00b0d1;
+  --teal-mid: #40c4dc;
+  --teal-solid: #039297;
+  --teal-dark: #0b5c68;
+  --teal-deep: #0b3b4d;
+  --tan: #d4ae87;
+  --tan-soft: #f2e5d5;
+  --tan-ink: #6e4e2e;
+  --ink: #0e2c36;
+  --ink-soft: #4c6a74;
+  --line: #d6e6ea;
+  --line-soft: #eaf2f4;
+  --paper: #ffffff;
+  --bg: #f3f8f9;
+  --green: #0d9468;
+  --amber: #c98212;
+  --red: #c24b38;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 18px 40px -22px rgba(11, 59, 77, 0.25);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
   display: block;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.contact-page {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-  box-sizing: border-box;
+  min-height: 100vh;
+  font-family: var(--font);
+  color: var(--ink);
   background:
-    radial-gradient(circle at 92% 5%, rgba(32, 176, 193, 0.08), transparent 34%),
-    radial-gradient(circle at 10% 90%, rgba(10, 116, 128, 0.06), transparent 36%),
-    #f7fbfa;
-  color: #142b2e;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  overflow: hidden;
+    radial-gradient(900px 500px at 10% -10%, rgba(0, 176, 209, 0.14), transparent 60%),
+    radial-gradient(900px 500px at 95% 105%, rgba(212, 174, 135, 0.22), transparent 60%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  padding: 20px 14px calc(36px + env(safe-area-inset-bottom, 0px));
 }
 
-.contact-shell {
-  width: min(100%, 1200px);
-  animation: pageEnter 0.65s ease both;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.brand-banner {
-  min-height: 94px;
-  padding: 20px 22px;
+button {
+  font-family: inherit;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.brandbar {
+  background: linear-gradient(120deg, var(--teal-bright) 0%, #3aaab6 55%, var(--tan) 100%);
   border-radius: 16px;
+  padding: 18px 20px;
+  color: #fff;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-  background: linear-gradient(
-    135deg,
-    #13b7d1 0%,
-    #4fb7c3 42%,
-    #9ab99e 68%,
-    #d4b18a 100%
-  );
-  box-shadow: 0 18px 34px rgba(13, 92, 104, 0.16);
-  overflow: hidden;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.18) 45%,
-      transparent 60%
-    );
-    transform: translateX(-120%);
-    animation: shimmer 4.8s ease-in-out infinite;
-  }
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
 }
 
-.brand-left,
-.banner-label {
-  position: relative;
-  z-index: 1;
+.brandbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
 .eyebrow {
-  width: fit-content;
-  padding: 5px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 999px;
-  color: #ffffff;
-  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  background: rgba(255, 255, 255, 0.13);
-  margin-bottom: 11px;
-  white-space: nowrap;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
-.brand-title {
+.collab {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #ffffff;
-  font-size: 19px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.drop-icon {
-  width: 18px;
-  height: 18px;
+.logo-word {
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.02em;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-
-  svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+  gap: 6px;
 }
 
-.banner-label {
-  margin-top: 2px;
-  color: #ffffff;
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: 0.07em;
+.logo-word .drop {
+  width: 15px;
+  height: 18px;
+  display: inline-block;
+}
+
+.collab .x {
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.brandbar-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-align: right;
+  opacity: 0.92;
+  line-height: 1.35;
+  flex-shrink: 0;
 }
 
-.contact-card {
-  background: #ffffff;
-  border: 1px solid #d8ebe8;
-  border-radius: 18px;
-  box-shadow:
-    0 20px 42px rgba(20, 43, 46, 0.08),
-    0 2px 8px rgba(20, 43, 46, 0.04);
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 
-.progress-track {
-  display: flex;
-  gap: 4px;
-  padding: 16px 27px 0;
-}
-
-.progress-segment {
-  flex: 1;
-  height: 4px;
-  border-radius: 999px;
-  background: #e3eeed;
-  transition: background-color 0.25s ease;
-
-  &.active {
-    background: #087382;
-  }
-}
-
-.step-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 27px 0;
-}
-
-.step-label {
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #7c9297;
-}
-
-.section-badge {
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: #e5f6f7;
-  color: #087382;
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-}
-
-.content-block {
-  padding: 16px 27px 27px;
-}
-
-h1 {
-  max-width: 500px;
-  margin: 0 0 8px;
-  color: #075c68;
-  font-size: clamp(20px, 2.6vw, 22px);
-  line-height: 1.28;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
-
-.description {
-  max-width: 540px;
-  margin: 0 0 22px;
-  color: #5f737a;
-  font-size: 14px;
-  line-height: 1.5;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
-
-.contact-form {
+.panel {
+  padding: 24px 24px 26px;
+  min-height: 360px;
   display: flex;
   flex-direction: column;
 }
 
-.field-group {
-  margin-bottom: 16px;
-
-  label {
-    display: block;
-    margin-bottom: 6px;
-    color: #075c68;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  input {
-    width: 100%;
-    height: 44px;
-    padding: 0 14px;
-    border: 1.5px solid #dbe8e7;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #142b2e;
-    font-size: 14px;
-    font-family: inherit;
-    box-sizing: border-box;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-
-    &::placeholder {
-      color: #a3b4b8;
-    }
-
-    &:hover {
-      border-color: #b9d8d8;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #21b6d2;
-      box-shadow: 0 0 0 3px rgba(33, 182, 210, 0.14);
-    }
-
-    &.ng-invalid.ng-touched {
-      border-color: #d64545;
-    }
-  }
-}
-
-.action-row {
+.screen {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 20px;
+  flex-direction: column;
+  flex: 1;
 }
 
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 0;
-  background: transparent;
-  color: #5f737a;
-  font-size: 14px;
+.screen.enter {
+  animation: screenIn 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes screenIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1 {
+  font-size: clamp(20px, 4.5vw, 24px);
   font-weight: 700;
-  cursor: pointer;
-  padding: 8px 4px;
-  transition: color 0.18s ease, transform 0.18s ease;
-
-  span {
-    transition: transform 0.18s ease;
-  }
-
-  &:hover {
-    color: #142b2e;
-
-    span {
-      transform: translateX(-3px);
-    }
-  }
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: var(--teal-deep);
+  margin-bottom: 8px;
 }
 
-.continue-btn {
-  min-width: 150px;
-  height: 42px;
+.sub {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+}
+
+.assure {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background: rgba(3, 146, 151, 0.07);
+  border: 1px solid rgba(3, 146, 151, 0.2);
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--teal-deep);
+}
+
+.assure svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--teal-dark);
+  margin-bottom: 7px;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input:focus {
+  border-color: var(--teal-solid);
+}
+
+.field.bad input {
+  border-color: var(--red);
+}
+
+.field .err {
+  display: none;
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 5px;
+}
+
+.field.bad .err {
+  display: block;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 11px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  border: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #087382 0%, #075c68 100%);
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  box-shadow: 0 12px 22px rgba(7, 92, 104, 0.32);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
+  gap: 6px;
+  transition: transform 0.1s, opacity 0.15s, box-shadow 0.15s;
+}
 
-  span {
-    transition: transform 0.18s ease;
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal-deep));
+  color: #fff;
+  box-shadow: 0 6px 16px -6px rgba(11, 59, 77, 0.5);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  padding: 12px 8px;
+}
+
+.btn-ghost:hover {
+  color: var(--teal-dark);
+}
+
+@media (min-width: 1000px) {
+  :host {
+    padding-left: 28px;
+    padding-right: 28px;
   }
 
-  &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.04);
-    box-shadow: 0 16px 26px rgba(7, 92, 104, 0.38);
-
-    span {
-      transform: translateX(3px);
-    }
+  .app {
+    max-width: 1500px;
   }
 
-  &:active {
-    transform: translateY(-1px) scale(0.98);
+  .panel {
+    padding: 30px 56px 34px;
+    min-height: 440px;
   }
 
-  &:focus-visible {
-    outline: 3px solid rgba(19, 183, 209, 0.35);
-    outline-offset: 3px;
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .screen > .sub,
+  .screen > h1 {
+    max-width: 900px;
   }
 }
 
-@keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.985);
+@media (max-width: 520px) {
+  .panel {
+    padding: 20px 18px 24px;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes shimmer {
-  0%,
-  65% {
-    transform: translateX(-120%);
-  }
-
-  100% {
-    transform: translateX(120%);
-  }
-}
-
-@media (max-width: 680px) {
-  .contact-page {
-    align-items: flex-start;
-    padding: 22px 16px;
-  }
-
-  .contact-shell {
-    width: 100%;
-  }
-
-  .brand-banner {
-    min-height: auto;
-    flex-direction: column;
-    gap: 16px;
-    padding: 18px;
-  }
-
-  .banner-label {
-    align-self: flex-end;
-  }
-
-  .eyebrow {
-    white-space: normal;
-    line-height: 1.35;
-  }
-
-  .brand-title {
-    font-size: 17px;
-  }
-
-  .content-block {
-    padding: 16px 20px 24px;
-  }
-
-  .action-row {
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .continue-btn {
-    width: 100%;
-  }
-
-  .back-btn {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 420px) {
-  .contact-page {
-    padding: 14px 10px;
-  }
-
-  .brand-banner {
-    border-radius: 14px;
+  .brandbar {
     padding: 16px;
   }
-
-  .contact-card {
-    border-radius: 15px;
-  }
-
-  .progress-track,
-  .step-meta {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .content-block {
-    padding: 14px 16px 20px;
-  }
-
-  h1 {
-    font-size: 19px;
-  }
-
-  .description {
-    font-size: 13px;
-  }
-}
-.required-asterisk {
-  color: #e11d48; // or whatever your error/accent color is
-  margin-left: 2px;
 }

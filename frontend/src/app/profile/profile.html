@@ -1,182 +1,86 @@
-<section class="step-page">
-  <div class="step-shell">
-
-    <header class="brand-banner">
-      <div class="brand-left">
-        <div class="eyebrow">EU ESPR · AHEAD OF THE 2027 DELEGATED ACT</div>
-        <div class="brand-title">
-          <span class="drop-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
-                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"
-              />
-              <path
-                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
-          <span>BluWin × Reput.ai</span>
-        </div>
+<div class="app">
+  <header class="brandbar">
+    <div class="brandbar-left">
+      <span class="eyebrow">{{ data.eyebrow }}</span>
+      <div class="collab">
+        <span class="logo-word">
+          <svg class="drop" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+            <path d="M9 1.5C9 1.5 2 9.2 2 14.2A7 7 0 0 0 16 14.2C16 9.2 9 1.5 9 1.5Z" stroke="#fff" stroke-width="1.6"/>
+            <path d="M6 15a3 3 0 0 0 3 2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ data.brandLeft }}
+        </span>
+        <span class="x">×</span>
+        <span class="logo-word">{{ data.brandRight }}</span>
       </div>
-      <div class="banner-label">DPP<br />READINESS<br />SCAN</div>
-    </header>
+    </div>
+    <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
+  </header>
 
-    <main class="step-card">
-      <div class="progress-track">
-        @for (step of steps; track step) {
-          <span class="progress-segment" [class.active]="step === currentStep"></span>
-        }
-      </div>
+  <main class="card" id="card">
+    <div class="rail" id="rail" hidden></div>
+    <div class="step-meta" id="stepMeta" hidden>
+      <span id="stepCounter"></span>
+      <span class="step-tag" id="stepTag"></span>
+    </div>
+    <div class="panel" id="panel">
+      <div class="screen enter">
+        <h1>{{ data.heading }}</h1>
+        <p class="sub">{{ data.subtitle }}</p>
 
-      <div class="step-meta">
-        <span class="step-label">STEP {{ currentStep }} / {{ totalSteps }}</span>
-        <span class="section-badge">PROFILE</span>
-      </div>
-
-      <div class="content-block">
-        <h1>A little about your facility</h1>
-        <p class="description">This helps us calibrate the readiness benchmark to your segment.</p>
-
-        @if (submitError) {
-  <p class="error-message">{{ submitError }}</p>
-}
-
-        <form [formGroup]="form" class="profile-form">
-
-          <div class="field-group">
-            <label>What are you assessing? <span class="required-asterisk">*</span></label>
-
-            <div class="radio-card-group">
-              <button
-                type="button"
-                class="radio-card"
-                [class.selected]="form.get('assessingType')?.value === 'brand'"
-                (click)="selectAssessingType('brand')"
-              >
-                <span class="radio-dot" aria-hidden="true"></span>
-                <span class="radio-card-text">
-                  <strong>A brand, assessing a single product</strong>
-                  <span class="radio-card-desc">
-                    You want a DPP/QR readiness score for one product or product line
-                  </span>
-                </span>
-              </button>
-
-              <button
-                type="button"
-                class="radio-card"
-                [class.selected]="form.get('assessingType')?.value === 'facility'"
-                (click)="selectAssessingType('facility')"
-              >
-                <span class="radio-dot" aria-hidden="true"></span>
-                <span class="radio-card-text">
-                  <strong>A facility, assessing full supply chain</strong>
-                  <span class="radio-card-desc">
-                    You want a readiness score across your whole operation (spinner, mill, manufacturer, etc.)
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-
-          @if (isBrandSelected) {
-            <div class="field-group">
-                  <label for="productOrCategory">Product or category being assessed <span class="required-asterisk">*</span></label>
-
-              <input
-                id="productOrCategory"
-                type="text"
-                formControlName="productOrCategory"
-                placeholder="e.g. Men's cotton crew-neck tee, SS26"
-              />
-            </div>
+        <div class="options" id="personaOpts">
+          @for (o of data.personaOptions; track o.v) {
+            <button
+              type="button"
+              class="opt"
+              [class.selected]="selectedPersona === o.v"
+              [attr.data-val]="o.v"
+              [attr.aria-pressed]="selectedPersona === o.v"
+              (click)="selectPersona(o.v)">
+              <div class="ico">
+                @if (o.icon === 'brand') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"/>
+                    <circle cx="7" cy="7" r="1.4"/>
+                  </svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2 2 7l10 5 10-5-10-5Z"/>
+                    <path d="m2 17 10 5 10-5"/>
+                    <path d="m2 12 10 5 10-5"/>
+                  </svg>
+                }
+              </div>
+              <div class="opt-text">
+                <div class="opt-title">{{ o.t }}</div>
+                <div class="opt-desc">{{ o.d }}</div>
+              </div>
+              <div class="radio"></div>
+            </button>
           }
+        </div>
 
-          <div class="field-group">
-              <label for="primaryProductCategory">Primary product category <span class="required-asterisk">*</span></label>
-
-            <select id="primaryProductCategory" formControlName="primaryProductCategory">
-              <option value="" disabled>Select one</option>
-              @for (category of productCategories; track category) {
-                <option [value]="category">{{ category }}</option>
-              }
-            </select>
+        <div style="margin-top:16px">
+          <div class="assure">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
+              <path d="M6.8 10.3 9 12.4 13.4 7.8" stroke="#039297" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ data.assureText }}</span>
           </div>
+        </div>
 
-          <div class="field-group">
-              <label for="annualExportVolume">Annual export volume <span class="required-asterisk">*</span></label>
-
-            <select id="annualExportVolume" formControlName="annualExportVolume">
-              <option value="" disabled>Select one</option>
-              @for (volume of exportVolumes; track volume) {
-                <option [value]="volume">{{ volume }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="field-group">
-            <label>Primary export markets</label>
-            <div class="pill-toggle-group">
-              @for (market of exportMarketOptions; track market) {
-                <button
-                  type="button"
-                  class="pill-toggle"
-                  [class.selected]="isMarketSelected(market)"
-                  (click)="toggleExportMarket(market)"
-                >
-                  {{ market }}
-                </button>
-              }
-            </div>
-          </div>
-
-          <div class="field-group">
-              <label>How many production tiers are included in this assessment? <span class="required-asterisk">*</span></label>
-
-
-            <div class="radio-card-group">
-              @for (tier of tierOptions; track tier.value) {
-                <button
-                  type="button"
-                  class="radio-card"
-                  [class.selected]="form.get('productionTiers')?.value === tier.value"
-                  (click)="selectProductionTier(tier.value)"
-                >
-                  <span class="radio-dot" aria-hidden="true"></span>
-                  <span class="radio-card-text">
-                    <strong>{{ tier.title }}</strong>
-                    <span class="radio-card-desc">{{ tier.description }}</span>
-                  </span>
-                </button>
-              }
-            </div>
-          </div>
-
-        </form>
-
-        <div class="action-row">
-          <button type="button" class="back-btn" (click)="onBack()">
-            <span aria-hidden="true">←</span> Back
-          </button>
-
+        <div class="nav">
+          <button type="button" class="btn btn-ghost" (click)="onBack()">← Back</button>
           <button
-  type="button"
-  class="continue-btn"
-  [disabled]="form.invalid || isSubmitting"
-  (click)="onContinue()"
->
-  @if (!isSubmitting) {
-    <span>Continue</span>
-    <span aria-hidden="true">→</span>
-  } @else {
-    <span>Submitting...</span>
-  }
-</button>
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!selectedPersona"
+            (click)="onContinue()">
+            Continue →
+          </button>
         </div>
       </div>
-    </main>
-
-  </div>
-</section>
+    </div>
+  </main>
+</div>

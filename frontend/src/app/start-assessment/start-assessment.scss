@@ -1,453 +1,359 @@
-/* ------------------------------------------------------------------
-   Fonts: add this once in src/index.html <head>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-------------------------------------------------------------------- */
-
-$teal-900: #0b5c6b; // headings, CTA
-$teal-800: #0f6f80;
-$teal-600: #1795ae;
-$teal-500: #27b3d0; // banner start / phase borders
-$teal-100: #eaf5f7; // note bar
-$sand-400: #d2a67c; // banner end
-$ink-600: #4a5a60;
-$ink-500: #5f6f75;
-$white: #fff;
-
-$font-sans: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
-$font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-
-$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-
 :host {
-  display: block;
+  color-scheme: light;
+  --teal-bright: #00B0D1;
+  --teal-mid: #3CB0C7;
+  --teal-solid: #039297;
+  --teal-deep: #0B5C68;
+  --teal-dark: #0A7480;
+  --tan: #D4AE87;
+  --tan-ink: #7A5A2E;
+  --bg: #F7FAF9;
+  --paper: #FFFFFF;
+  --ink: #142B2E;
+  --ink-soft: #5C7278;
+  --line: #DCEAE8;
+  --line-soft: #EDF6F4;
+  --amber: #B8860B;
+  --amber-bg: #FBF3DE;
+  --red: #B3452C;
+  --red-bg: #FBEAE4;
+  --good: #039297;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  box-sizing: border-box;
   min-height: 100vh;
-  font-family: $font-sans;
-  color: $ink-600;
-  background: linear-gradient(180deg, #f4fafb 0%, #ffffff 40%);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(0, 176, 209, 0.08), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(11, 92, 104, 0.06), transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-block: 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-.page {
+*, *::before, *::after {
   box-sizing: border-box;
-  width: 100%;
-  max-width: 1840px;
-  margin: 0 auto;
-  padding: clamp(12px, 2.2vw, 40px);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(14px, 1.4vw, 22px);
-}
-
-/* ===================== Banner ===================== */
-.banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: clamp(16px, 1.6vw, 26px) clamp(18px, 2.4vw, 28px);
-  border-radius: clamp(22px, 2.4vw, 34px);
-  color: $white;
-  background: linear-gradient(100deg, $teal-500 0%, #6bb9be 52%, $sand-400 100%);
-  box-shadow: 0 10px 28px -12px rgba($teal-500, 0.55);
-  animation: bannerIn 0.7s $ease-out both;
-
-  &__left {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  &__badge {
-    display: inline-block;
-    padding: 6px 13px;
-    font-family: $font-mono;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: $white;
-    background: rgba($white, 0.14);
-    border: 1px solid rgba($white, 0.7);
-    border-radius: 999px;
-    transition: background 0.25s ease, transform 0.25s ease;
-
-    &:hover {
-      background: rgba($white, 0.28);
-      transform: translateY(-1px);
-    }
-  }
-
-  &__brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: clamp(18px, 1.6vw, 23px);
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    flex-wrap: wrap;
-  }
-
-  &__logo {
-    width: 24px;
-    height: 24px;
-    flex: none;
-    color: $white;
-    transition: transform 0.5s $ease-out;
-  }
-
-  &__brand:hover &__logo {
-    transform: rotate(-12deg) scale(1.12);
-  }
-
-  &__times {
-    font-weight: 400;
-    font-size: 0.7em;
-    opacity: 0.85;
-  }
-
-  &__right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-family: $font-mono;
-    font-size: 11px;
-    line-height: 1.35;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-align: right;
-    opacity: 0.95;
-  }
-}
-
-/* ===================== Main card ===================== */
-.card {
-  box-sizing: border-box;
-  padding: clamp(20px, 3.8vw, 70px) clamp(16px, 3.8vw, 70px) clamp(22px, 2.6vw, 44px);
-  background: $white;
-  border-radius: clamp(22px, 2.4vw, 34px);
-  box-shadow: 0 8px 40px -14px rgba(11, 92, 107, 0.2);
-  animation: cardIn 0.8s $ease-out 0.12s both;
-
-  &__title {
-    margin: 0 0 8px;
-    font-size: clamp(22px, 2.5vw, 31px);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    color: $teal-900;
-  }
-
-  &__desc {
-    margin: 0;
-    max-width: 78ch;
-    font-size: clamp(14px, 1.2vw, 17px);
-    line-height: 1.55;
-    color: $ink-500;
-  }
-}
-
-/* ===================== Video ===================== */
-.video {
-  width: 100%;
-  max-width: 1125px;
-  margin: clamp(16px, 1.6vw, 24px) auto clamp(18px, 2vw, 28px);
-  aspect-ratio: 16 / 9;
-  border-radius: clamp(14px, 1.6vw, 22px);
-  overflow: hidden;
-  background: #0d2a2a;
-  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.55);
-  transition: transform 0.45s $ease-out, box-shadow 0.45s $ease-out;
-
-  &:hover,
-  &:focus-within {
-    transform: translateY(-3px);
-    box-shadow: 0 26px 50px -18px rgba(0, 0, 0, 0.6);
-  }
-
-  &__player {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    background: #0d2a2a;
-  }
-}
-
-/* ===================== Reassurance bar ===================== */
-.note {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 20px;
-  font-size: clamp(13px, 1.1vw, 15.5px);
-  color: $ink-600;
-  background: $teal-100;
-  border: 1px solid #d3e8ec;
-  border-radius: 14px;
-  transition: background 0.25s ease, border-color 0.25s ease;
-
-  &:hover {
-    background: #e0f0f3;
-    border-color: #b9dce3;
-  }
-
-  &__icon {
-    width: 20px;
-    height: 20px;
-    flex: none;
-    color: $teal-800;
-  }
-}
-
-/* ===================== Phases ===================== */
-.phases {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 1.2vw, 14px);
-  margin: clamp(14px, 1.4vw, 20px) 0 0;
+  margin: 0;
   padding: 0;
-  list-style: none;
 }
 
-.phase {
-  position: relative;
+button {
+  font-family: inherit;
+}
+
+.app {
+  width: 100%;
+  max-width: 640px;
+  min-width: 0;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--teal-bright);
+  outline-offset: 2px;
+}
+
+/* ---------- Brand bar ---------- */
+.brandbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 22px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--teal-bright) 0%, var(--teal-mid) 38%, #8FBBA8 68%, var(--tan) 100%);
+  box-shadow: 0 12px 28px -14px rgba(11, 92, 104, 0.35);
+}
+
+.brandmark {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: clamp(14px, 1.4vw, 18px) clamp(16px, 1.4vw, 18px) clamp(16px, 1.6vw, 22px);
-  background: $white;
-  border: 2px solid $teal-500;
-  border-radius: clamp(20px, 2vw, 26px);
-  cursor: default;
-  outline: none;
-  transition: transform 0.3s $ease-out, box-shadow 0.3s ease, background 0.3s ease,
-    border-color 0.3s ease;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba($teal-500, 0.1), rgba($sand-400, 0.12));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  &:hover,
-  &:focus-visible {
-    transform: translateY(-5px);
-    border-color: $teal-800;
-    box-shadow: 0 16px 28px -14px rgba($teal-600, 0.55);
-
-    &::after {
-      opacity: 1;
-    }
-  }
-
-  &:active {
-    transform: translateY(-1px) scale(0.99);
-  }
-
-  &__tag {
-    font-family: $font-mono;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: $teal-800;
-  }
-
-  &__title {
-    font-size: clamp(15px, 1.25vw, 17px);
-    font-weight: 700;
-    color: #123b43;
-  }
-
-  &__sub {
-    font-size: clamp(13px, 1.05vw, 14.5px);
-    color: $ink-500;
-  }
+  gap: 8px;
+  min-width: 0;
 }
 
-/* ===================== CTA ===================== */
-.actions {
+.brand-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.wordmark {
   display: flex;
-  justify-content: flex-end;
-  margin-top: clamp(20px, 2.4vw, 36px);
-}
-
-.cta {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 16px 28px;
-  font-family: inherit;
-  font-size: clamp(15px, 1.2vw, 17px);
+}
+
+.wordmark span {
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  font-size: 17px;
+  color: #fff;
+}
+
+.wordmark .sep {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 400;
+  margin: 0 2px;
+  font-size: 14px;
+}
+
+.logo-mark {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.tagline {
+  font-size: 10.5px;
+  color: #fff;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+  text-align: right;
+  opacity: 0.92;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ---------- Card, panel ---------- */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  overflow: clip;
+  box-shadow: 0 1px 2px rgba(11, 59, 77, 0.04), 0 12px 32px -16px rgba(11, 59, 77, 0.14);
+}
+
+.panel {
+  padding: 22px 28px 28px;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.panel h1 {
+  font-size: 23px;
   font-weight: 700;
-  color: $white;
-  background: $teal-900;
-  border: 0;
-  border-radius: 14px;
-  box-shadow: 0 10px 22px -10px rgba($teal-900, 0.8);
+  line-height: 1.3;
+  color: var(--teal-deep);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.panel .sub {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.screen.enter {
+  animation: screenIn 0.35s ease both;
+}
+
+@keyframes screenIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Reassurance strip ---------- */
+.assure {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background: rgba(3, 146, 151, 0.07);
+  border: 1px solid rgba(3, 146, 151, 0.2);
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--teal-deep);
+}
+
+.assure svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+/* ---------- Intro ---------- */
+.video-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--teal-deep);
+  aspect-ratio: 16 / 9;
+  max-width: 100%;
+  margin-bottom: 18px;
+  box-shadow: 0 14px 30px -18px rgba(11, 92, 104, 0.55);
+}
+
+.video-wrap video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: var(--teal-deep);
+}
+
+.petal-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.petal {
+  flex: 1;
+  min-width: 0;
+  background: var(--paper);
+  border: 1.6px solid var(--teal-mid);
+  border-radius: 0 24px 24px 24px;
+  padding: 14px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.petal-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  color: var(--teal-solid);
+  font-weight: 700;
+}
+
+.petal-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.petal-desc {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+/* ---------- Nav / buttons ---------- */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 11px;
+  border: none;
   cursor: pointer;
-  transition: transform 0.25s $ease-out, box-shadow 0.25s ease, background 0.25s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s, opacity 0.15s, box-shadow 0.15s;
+}
 
-  /* sheen sweep on hover */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -80%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(110deg, transparent, rgba($white, 0.28), transparent);
-    transform: skewX(-20deg);
-    transition: left 0.6s ease;
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal-deep));
+  color: #fff;
+  box-shadow: 0 6px 16px -6px rgba(11, 59, 77, 0.5);
+}
+
+.btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- Full-width layout on large screens ---------- */
+@media (min-width: 1000px) {
+  :host {
+    padding-left: 28px;
+    padding-right: 28px;
   }
-
-  &__arrow {
-    display: inline-block;
-    transition: transform 0.25s $ease-out;
+  .app {
+    max-width: 1500px;
   }
-
-  &:hover:not(:disabled) {
-    background: $teal-800;
-    transform: translateY(-3px);
-    box-shadow: 0 16px 28px -10px rgba($teal-900, 0.85);
-
-    &::before {
-      left: 130%;
-    }
-
-    .cta__arrow {
-      transform: translateX(6px);
-    }
+  .panel {
+    padding: 30px 56px 34px;
+    min-height: 440px;
   }
-
-  &:focus-visible {
-    outline: 3px solid rgba($teal-500, 0.55);
-    outline-offset: 3px;
+  .screen > .sub,
+  .screen > h1 {
+    max-width: 900px;
   }
-
-  &:active:not(:disabled) {
-    transform: translateY(0) scale(0.97);
-    box-shadow: 0 6px 14px -8px rgba($teal-900, 0.9);
-  }
-
-  &:disabled {
-    cursor: progress;
-  }
-
-  /* click animation */
-  &--clicked {
-    animation: ctaPulse 0.32s ease-out;
-
-    .cta__arrow {
-      animation: arrowGo 0.32s ease-in forwards;
-    }
+  .intro-video,
+  .video-wrap {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
-/* ===================== Keyframes ===================== */
-@keyframes bannerIn {
-  from {
-    opacity: 0;
-    transform: translateY(-14px);
+@media (max-width: 520px) {
+  .panel {
+    padding: 20px 18px 24px;
   }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes cardIn {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes ctaPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba($teal-500, 0.7);
-  }
-  100% {
-    box-shadow: 0 0 0 18px rgba($teal-500, 0);
-  }
-}
-
-@keyframes arrowGo {
-  to {
-    transform: translateX(14px);
-    opacity: 0;
-  }
-}
-
-/* ===================== Responsive ===================== */
-@media (max-width: 1024px) {
-  .video {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .banner {
+  .petal-row {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-
-    &__right {
-      flex-direction: row;
-      gap: 6px;
-      align-items: center;
-      text-align: left;
-    }
   }
-
-  .phases {
-    grid-template-columns: 1fr;
+  .brandbar {
+    padding: 16px;
   }
-
-  .actions {
-    justify-content: stretch;
-  }
-
-  .cta {
-    width: 100%;
-    justify-content: center;
+  .wordmark span {
+    font-size: 15px;
   }
 }
 
-@media (max-width: 480px) {
-  .banner__badge {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-  }
-
-  .note {
-    align-items: flex-start;
-    padding: 12px 14px;
-  }
-}
-
-/* ===================== Reduced motion ===================== */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
     transition-duration: 0.01ms !important;
   }
 }

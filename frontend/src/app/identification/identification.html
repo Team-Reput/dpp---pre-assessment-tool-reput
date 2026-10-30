@@ -1,115 +1,102 @@
-<section class="step-page">
-  <div class="step-shell">
-
-    <header class="brand-banner">
-      <div class="brand-left">
-        <div class="eyebrow">EU ESPR · AHEAD OF THE 2027 DELEGATED ACT</div>
-        <div class="brand-title">
-          <span class="drop-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
-                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"
-              />
-              <path
-                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
-          <span>BluWin × Reput.ai</span>
-        </div>
+<div class="app">
+  <header class="brandbar">
+    <div class="brandbar-left">
+      <span class="eyebrow">{{ data.eyebrow }}</span>
+      <div class="collab">
+        <span class="logo-word">
+          <svg class="drop" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+            <path d="M9 1.5C9 1.5 2 9.2 2 14.2A7 7 0 0 0 16 14.2C16 9.2 9 1.5 9 1.5Z" stroke="#fff" stroke-width="1.6"/>
+            <path d="M6 15a3 3 0 0 0 3 2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ data.brandLeft }}
+        </span>
+        <span class="x">×</span>
+        <span class="logo-word">{{ data.brandRight }}</span>
       </div>
-      <div class="banner-label">DPP<br />READINESS<br />SCAN</div>
-    </header>
+    </div>
+    <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
+  </header>
 
-    <main class="step-card">
-      <div class="progress-track">
-        @for (step of steps; track step) {
-          <span class="progress-segment" [class.active]="step === currentStep"></span>
-        }
-      </div>
-
-      <div class="step-meta">
-        <span class="step-label">STEP {{ currentStep }} / {{ totalSteps }}</span>
-        <span class="section-badge">IDENTIFICATION</span>
-      </div>
-
-      <div class="content-block">
-        <h1>Product Identification</h1>
-        <p class="description">
-          Product type, style code, PO quantity, product image &amp; description, collection/story,
-          wash &amp; care, brand, brand logo, brand URL, manufacturer, export market(s), SKU volume tier
+  <main class="card" id="card">
+    <div class="rail" id="rail">
+      @for (seg of segments; track seg) {
+        <div
+          class="seg"
+          [class.done]="seg < stepMeta.idx"
+          [class.cur]="seg === stepMeta.idx"></div>
+      }
+    </div>
+    <div class="step-meta" id="stepMeta">
+      <span id="stepCounter">Step {{ stepMeta.idx + 1 }} / {{ stepMeta.total }}</span>
+      <span class="step-tag" id="stepTag">{{ stepMeta.tag }}</span>
+    </div>
+    <div class="panel" id="panel">
+      <div class="screen enter">
+        <h1>{{ cat.label }}</h1>
+        <p class="sub">
+          {{ cat.relevance }}
+          @if (cat.forwardLooking) {
+            <span class="fwd-badge">Advanced readiness</span>
+          }
         </p>
 
-        @if (submitError) {
-  <p class="error-message">{{ submitError }}</p>
-}
+        <div class="assure">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
+            <path d="M6.8 10.3 9 12.4 13.4 7.8" stroke="#039297" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>{{ data.sectionGuide }}</span>
+        </div>
 
-        <form [formGroup]="form" class="identification-form">
+        <div class="q-progress">
+          <div class="q-bar"><i id="qBar" [style.width.%]="progressPct"></i></div>
+          <div class="q-count" id="qCount">{{ answeredCount }} of {{ items.length }} answered</div>
+        </div>
 
-          <div class="field-group">
-            <div class="radio-card-group">
-              @for (option of collectionOptions; track option.value) {
+        <div class="qlist" id="qlist">
+          @for (item of items; track $index; let i = $index) {
+            <div
+              class="q"
+              [class.yes]="answers[i] === true"
+              [class.no]="answers[i] === false"
+              [class.focus]="focusedIdx === i"
+              [attr.data-i]="i">
+              <div class="q-num">{{ formatNum(i) }}</div>
+              <div class="q-text">{{ item }}</div>
+              <div class="yn" role="group" aria-label="Your answer">
                 <button
                   type="button"
-                  class="radio-card"
-                  [class.selected]="form.get('dataCollected')?.value === option.value"
-                  (click)="selectDataCollected(option.value)"
-                >
-                  <span class="radio-dot" aria-hidden="true"></span>
-                  <span class="radio-card-text">
-                    <strong>{{ option.title }}</strong>
-                    <span class="radio-card-desc">{{ option.description }}</span>
-                  </span>
+                  class="y"
+                  data-v="1"
+                  [attr.aria-pressed]="answers[i] === true"
+                  (click)="setAnswer(i, true)">
+                  Yes
                 </button>
-              }
-            </div>
-          </div>
-
-          @if (showSystemsSection) {
-            <div class="field-group">
-              <label>Through which system(s)?</label>
-              <div class="pill-toggle-group">
-                @for (system of systemOptions; track system) {
-                  <button
-                    type="button"
-                    class="pill-toggle"
-                    [class.selected]="isSystemSelected(system)"
-                    (click)="toggleSystem(system)"
-                  >
-                    {{ system }}
-                  </button>
-                }
+                <button
+                  type="button"
+                  class="n"
+                  data-v="0"
+                  [attr.aria-pressed]="answers[i] === false"
+                  (click)="setAnswer(i, false)">
+                  No
+                </button>
               </div>
             </div>
           }
+        </div>
 
-        </form>
+        <div class="help-note" id="helpNote" [hidden]="!showHelpNote">
+          <span class="help-label">How we can help</span>
+          <span id="helpText">{{ data.helpNote }}</span>
+        </div>
 
-        <div class="action-row">
-          <button type="button" class="back-btn" (click)="onBack()">
-            <span aria-hidden="true">←</span> Back
-          </button>
-
-         <button 
-           type = "button"
-           class = "continue-btn"
-           [disabled] = "form.invalid || isSubmitting"
-           (click) = "onContinue()"
-           >
-            @if (!isSubmitting){
-              <span>Continue</span>
-              <span aria-hidden="true">→</span>
-  } @else {
-    <span>Submitting...</span>
-  }
-
-
-         </button>
+        <div class="nav">
+          <button type="button" class="btn btn-ghost" (click)="onBack()">← Back</button>
+          <div class="nav-hint" id="navHint">{{ navHint }}</div>
+          <button type="button" class="btn btn-primary" id="catNext" (click)="onContinue()">Continue →</button>
         </div>
       </div>
-    </main>
-
-  </div>
-</section>
+    </div>
+  </main>
+</div>
+<app-shirt-dock></app-shirt-dock>

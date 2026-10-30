@@ -15,30 +15,35 @@ export interface LadderRung {
   text: string;
 }
 
-@Component({
-  selector: 'app-espr-dpp',
-  standalone: true, 
-  styleUrl: './espr-dpp.scss',
-  templateUrl: './espr-dpp.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class EsprDppComponent {
-  private readonly router = inject(Router);
+export interface EsprDppDummyData {
+  brandEyebrow: string;
+  partnerName: string;
+  brandName: string;
+  taglineLines: string[];
+  heading: string;
+  subheading: string;
+  ladderTitle: string;
+  ladderHint: string;
+  assure: string;
+  backLabel: string;
+  continueLabel: string;
+  tabs: EsprTab[];
+  ladder: LadderRung[];
+}
 
-  /* ---------- Copy ---------- */
-  @Input() heading = 'ESPR and the DPP, in a minute';
-  @Input() subheading = 'Tap through the basics. Skip anything you already know.';
-  @Input() ladderTitle = 'Who supplies what for a DPP?';
-  @Input() ladderHint = 'Tap a tier to see what it usually contributes. Brands bring it together. Everyone upstream feeds it.';
-  @Input() assure = 'You don’t need to remember any of this. We’ll keep the jargon light and guide you through the rest.';
-
-  /* ---------- Navigation ---------- */
-  @Input() backRoute = '/assessment/start';
-  @Input() nextRoute = '/assessment/contact';
-  @Output() back = new EventEmitter<void>();
-  @Output() continue = new EventEmitter<void>();
-
-  readonly tabs: EsprTab[] = [
+export const DUMMY_DATA: EsprDppDummyData = {
+  brandEyebrow: 'A TOOL FOR THE TEXTILE INDUSTRY',
+  partnerName: 'BluWin',
+  brandName: 'Reput.ai',
+  taglineLines: ['DPP', 'READINESS', 'SCAN'],
+  heading: 'ESPR and the DPP, in a minute',
+  subheading: 'Tap through the basics. Skip anything you already know.',
+  ladderTitle: 'Who supplies what for a DPP?',
+  ladderHint: 'Tap a tier to see what it usually contributes. Brands bring it together. Everyone upstream feeds it.',
+  assure: 'You don’t need to remember any of this. We’ll keep the jargon light and guide you through the rest.',
+  backLabel: 'Back',
+  continueLabel: 'Continue',
+  tabs: [
     {
       id: 'espr',
       label: 'What is ESPR?',
@@ -63,15 +68,68 @@ export class EsprDppComponent {
       key: 'The final data fields, access rules and timeline.',
       more: 'These come with the textile delegated act. So treat this scan as a readiness check against emerging requirements, not a legal checklist.',
     },
-  ];
+  ],
+  ladder: [
+    {
+      id: 'brand',
+      label: 'Brand',
+      title: 'Brand / product owner.',
+      text: 'Product identity, design, consumer information, repair and reuse information, and ownership of the DPP.',
+    },
+    {
+      id: 't1',
+      label: 'Tier 1',
+      title: 'Garment manufacturer.',
+      text: 'Bill of materials, production site, trims, material lots and testing.',
+    },
+    {
+      id: 't2',
+      label: 'Tier 2',
+      title: 'Fabric / wet processor.',
+      text: 'Fibre composition, dyeing and finishing, chemicals used, performance tests and process data.',
+    },
+    {
+      id: 't3',
+      label: 'Tier 3',
+      title: 'Fibre / yarn supplier.',
+      text: 'Origin, composition, recycled or virgin status and chain of custody.',
+    },
+    {
+      id: 'chem',
+      label: 'Chemicals',
+      title: 'Chemical manufacturer.',
+      text: 'Product identity, safety data sheets, substances of concern and compliance certificates.',
+    },
+  ],
+};
 
-  readonly ladder: LadderRung[] = [
-    { id: 'brand', label: 'Brand', title: 'Brand / product owner.', text: 'Product identity, design, consumer information, repair and reuse information, and ownership of the DPP.' },
-    { id: 't1', label: 'Tier 1', title: 'Garment manufacturer.', text: 'Bill of materials, production site, trims, material lots and testing.' },
-    { id: 't2', label: 'Tier 2', title: 'Fabric / wet processor.', text: 'Fibre composition, dyeing and finishing, chemicals used, performance tests and process data.' },
-    { id: 't3', label: 'Tier 3', title: 'Fibre / yarn supplier.', text: 'Origin, composition, recycled or virgin status and chain of custody.' },
-    { id: 'chem', label: 'Chemicals', title: 'Chemical manufacturer.', text: 'Product identity, safety data sheets, substances of concern and compliance certificates.' },
-  ];
+@Component({
+  selector: 'app-espr-dpp',
+  standalone: true,
+  styleUrl: './espr-dpp.scss',
+  templateUrl: './espr-dpp.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class EsprDppComponent {
+  private readonly router = inject(Router);
+
+  readonly data = DUMMY_DATA;
+
+  /* ---------- Copy ---------- */
+  @Input() heading = DUMMY_DATA.heading;
+  @Input() subheading = DUMMY_DATA.subheading;
+  @Input() ladderTitle = DUMMY_DATA.ladderTitle;
+  @Input() ladderHint = DUMMY_DATA.ladderHint;
+  @Input() assure = DUMMY_DATA.assure;
+
+  /* ---------- Navigation ---------- */
+  @Input() backRoute = '/start-assessment';
+  @Input() nextRoute = '/contact';
+  @Output() back = new EventEmitter<void>();
+  @Output() continue = new EventEmitter<void>();
+
+  readonly tabs: EsprTab[] = DUMMY_DATA.tabs;
+  readonly ladder: LadderRung[] = DUMMY_DATA.ladder;
 
   /* ---------- State ---------- */
   readonly activeTabIndex = signal(0);
@@ -115,3 +173,6 @@ export class EsprDppComponent {
     if (this.nextRoute) this.router.navigateByUrl(this.nextRoute);
   }
 }
+
+export { EsprDppComponent as EsprDpp };
+
