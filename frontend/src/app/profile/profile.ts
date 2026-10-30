@@ -177,7 +177,7 @@ export class Profile {
       next: (response) => {
         this.isSubmitting = false;
         console.log('Profile saved:', response);
-        this.router.navigate(['/identification']); // move to next step only after success
+        // move to next step only after success
       },
       error: (err) => {
         this.isSubmitting = false;
@@ -185,5 +185,6 @@ export class Profile {
         console.error('API error:', err);
       }
     });
+     this.router.navigate(['/identification']);
   }
 }

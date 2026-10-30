@@ -13,6 +13,7 @@ import { SocialLabor } from './social-labor/social-labor';
 import { Structure } from './structure/structure';
 import { ExtendedData } from './extended-data/extended-data';
 import { Score } from './score/score';
+import { EsprDppComponent } from './espr-dpp/espr-dpp';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,11 @@ export const routes: Routes = [
   {
     path: 'start-assessment',
     component: StartAssessmentComponent,
+  },
+
+  {
+    path: 'espr-dpp',
+    component: EsprDppComponent,
   },
   {
     path: 'contact',

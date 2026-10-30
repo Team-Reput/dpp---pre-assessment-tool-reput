@@ -1,369 +1,453 @@
+/* ------------------------------------------------------------------
+   Fonts: add this once in src/index.html <head>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+------------------------------------------------------------------- */
+
+$teal-900: #0b5c6b; // headings, CTA
+$teal-800: #0f6f80;
+$teal-600: #1795ae;
+$teal-500: #27b3d0; // banner start / phase borders
+$teal-100: #eaf5f7; // note bar
+$sand-400: #d2a67c; // banner end
+$ink-600: #4a5a60;
+$ink-500: #5f6f75;
+$white: #fff;
+
+$font-sans: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+$font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
 :host {
   display: block;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  font-family: $font-sans;
+  color: $ink-600;
+  background: linear-gradient(180deg, #f4fafb 0%, #ffffff 40%);
+  -webkit-font-smoothing: antialiased;
 }
 
-.start-assessment-page {
-  height: 100vh;
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1840px;
+  margin: 0 auto;
+  padding: clamp(12px, 2.2vw, 40px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.4vw, 22px);
+}
+
+/* ===================== Banner ===================== */
+.banner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-  box-sizing: border-box;
-  background:
-    radial-gradient(circle at 92% 5%, rgba(32, 176, 193, 0.08), transparent 34%),
-    radial-gradient(circle at 10% 90%, rgba(10, 116, 128, 0.06), transparent 36%),
-    #f7fbfa;
-  color: #142b2e;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  overflow: hidden;
-}
-
-.assessment-shell {
-  width: min(100%, 1200px);
-  animation: pageEnter 0.65s ease both;
-}
-
-.brand-banner {
-  min-height: 130px;
-  padding: 28px 32px;
-  border-radius: 20px;
-  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 22px;
-  background: linear-gradient(
-    135deg,
-    #13b7d1 0%,
-    #4fb7c3 42%,
-    #9ab99e 68%,
-    #d4b18a 100%
-  );
-  box-shadow: 0 22px 44px rgba(13, 92, 104, 0.18);
-  overflow: hidden;
-  position: relative;
+  gap: 20px;
+  padding: clamp(16px, 1.6vw, 26px) clamp(18px, 2.4vw, 28px);
+  border-radius: clamp(22px, 2.4vw, 34px);
+  color: $white;
+  background: linear-gradient(100deg, $teal-500 0%, #6bb9be 52%, $sand-400 100%);
+  box-shadow: 0 10px 28px -12px rgba($teal-500, 0.55);
+  animation: bannerIn 0.7s $ease-out both;
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.18) 45%,
-      transparent 60%
-    );
-    transform: translateX(-120%);
-    animation: shimmer 4.8s ease-in-out infinite;
+  &__left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 6px 13px;
+    font-family: $font-mono;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $white;
+    background: rgba($white, 0.14);
+    border: 1px solid rgba($white, 0.7);
+    border-radius: 999px;
+    transition: background 0.25s ease, transform 0.25s ease;
+
+    &:hover {
+      background: rgba($white, 0.28);
+      transform: translateY(-1px);
+    }
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(18px, 1.6vw, 23px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    flex-wrap: wrap;
+  }
+
+  &__logo {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    color: $white;
+    transition: transform 0.5s $ease-out;
+  }
+
+  &__brand:hover &__logo {
+    transform: rotate(-12deg) scale(1.12);
+  }
+
+  &__times {
+    font-weight: 400;
+    font-size: 0.7em;
+    opacity: 0.85;
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: $font-mono;
+    font-size: 11px;
+    line-height: 1.35;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: right;
+    opacity: 0.95;
   }
 }
 
-.brand-left,
-.banner-label {
-  position: relative;
-  z-index: 1;
+/* ===================== Main card ===================== */
+.card {
+  box-sizing: border-box;
+  padding: clamp(20px, 3.8vw, 70px) clamp(16px, 3.8vw, 70px) clamp(22px, 2.6vw, 44px);
+  background: $white;
+  border-radius: clamp(22px, 2.4vw, 34px);
+  box-shadow: 0 8px 40px -14px rgba(11, 92, 107, 0.2);
+  animation: cardIn 0.8s $ease-out 0.12s both;
+
+  &__title {
+    margin: 0 0 8px;
+    font-size: clamp(22px, 2.5vw, 31px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: $teal-900;
+  }
+
+  &__desc {
+    margin: 0;
+    max-width: 78ch;
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.55;
+    color: $ink-500;
+  }
 }
 
-.eyebrow {
-  width: fit-content;
-  padding: 7px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 999px;
-  color: #ffffff;
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 12px;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  background: rgba(255, 255, 255, 0.13);
-  margin-bottom: 15px;
-  white-space: nowrap;
-}
+/* ===================== Video ===================== */
+.video {
+  width: 100%;
+  max-width: 1125px;
+  margin: clamp(16px, 1.6vw, 24px) auto clamp(18px, 2vw, 28px);
+  aspect-ratio: 16 / 9;
+  border-radius: clamp(14px, 1.6vw, 22px);
+  overflow: hidden;
+  background: #0d2a2a;
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.55);
+  transition: transform 0.45s $ease-out, box-shadow 0.45s $ease-out;
 
-.brand-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #ffffff;
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
+  &:hover,
+  &:focus-within {
+    transform: translateY(-3px);
+    box-shadow: 0 26px 50px -18px rgba(0, 0, 0, 0.6);
+  }
 
-.drop-icon {
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-
-  svg {
+  &__player {
+    display: block;
     width: 100%;
     height: 100%;
-    display: block;
+    object-fit: cover;
+    background: #0d2a2a;
   }
 }
 
-.banner-label {
-  margin-top: 3px;
-  color: #ffffff;
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: 0.07em;
-  text-align: right;
-}
-
-.assessment-card {
-  background: #ffffff;
-  border: 1px solid #d8ebe8;
-  border-radius: 22px;
-  box-shadow:
-    0 26px 54px rgba(20, 43, 46, 0.09),
-    0 3px 10px rgba(20, 43, 46, 0.05);
-  overflow: hidden;
-}
-
-.content-block {
-  padding: 36px 40px 40px;
-}
-
-h1 {
-  max-width: 100%;
-  margin: 0 0 14px;
-  color: #075c68;
-  font-size: clamp(26px, 3.4vw, 32px);
-  line-height: 1.26;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
-
-.description {
-  max-width: 100%;
-  margin: 0 0 30px;
-  color: #5f737a;
-  font-size: 16px;
-  line-height: 1.55;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
-
-.phase-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.phase-card {
-  min-height: 150px;
-  padding: 22px 20px;
-  border: 2px solid #21b6d2;
-  border-radius: 0 30px 30px 30px;
-  background: #ffffff;
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease,
-    background-color 0.22s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    border-color: #039297;
-    background-color: #f8fefe;
-    box-shadow: 0 14px 26px rgba(3, 146, 151, 0.14);
-  }
-}
-
-.phase-label {
-  display: block;
-  margin-bottom: 9px;
-  color: #039297;
-  font-family: "JetBrains Mono", "Courier New", monospace;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-}
-
-.phase-card h2 {
-  margin: 0 0 9px;
-  color: #101d20;
-  font-size: 16px;
-  line-height: 1.25;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-.phase-card p {
-  margin: 0;
-  color: #5f737a;
-  font-size: 13.5px;
-  line-height: 1.5;
-}
-
-.action-row {
+/* ===================== Reassurance bar ===================== */
+.note {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 36px;
-}
-
-.start-btn {
-  min-width: 210px;
-  height: 52px;
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #087382 0%, #075c68 100%);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  box-shadow: 0 14px 26px rgba(7, 92, 104, 0.32);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
-
-  span {
-    transition: transform 0.18s ease;
-  }
+  gap: 14px;
+  padding: 14px 20px;
+  font-size: clamp(13px, 1.1vw, 15.5px);
+  color: $ink-600;
+  background: $teal-100;
+  border: 1px solid #d3e8ec;
+  border-radius: 14px;
+  transition: background 0.25s ease, border-color 0.25s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.04);
-    box-shadow: 0 18px 30px rgba(7, 92, 104, 0.38);
+    background: #e0f0f3;
+    border-color: #b9dce3;
+  }
 
-    span {
-      transform: translateX(3px);
+  &__icon {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    color: $teal-800;
+  }
+}
+
+/* ===================== Phases ===================== */
+.phases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.2vw, 14px);
+  margin: clamp(14px, 1.4vw, 20px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: clamp(14px, 1.4vw, 18px) clamp(16px, 1.4vw, 18px) clamp(16px, 1.6vw, 22px);
+  background: $white;
+  border: 2px solid $teal-500;
+  border-radius: clamp(20px, 2vw, 26px);
+  cursor: default;
+  outline: none;
+  transition: transform 0.3s $ease-out, box-shadow 0.3s ease, background 0.3s ease,
+    border-color 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba($teal-500, 0.1), rgba($sand-400, 0.12));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-5px);
+    border-color: $teal-800;
+    box-shadow: 0 16px 28px -14px rgba($teal-600, 0.55);
+
+    &::after {
+      opacity: 1;
     }
   }
 
   &:active {
-    transform: translateY(-1px) scale(0.98);
+    transform: translateY(-1px) scale(0.99);
+  }
+
+  &__tag {
+    font-family: $font-mono;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $teal-800;
+  }
+
+  &__title {
+    font-size: clamp(15px, 1.25vw, 17px);
+    font-weight: 700;
+    color: #123b43;
+  }
+
+  &__sub {
+    font-size: clamp(13px, 1.05vw, 14.5px);
+    color: $ink-500;
+  }
+}
+
+/* ===================== CTA ===================== */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: clamp(20px, 2.4vw, 36px);
+}
+
+.cta {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 28px;
+  font-family: inherit;
+  font-size: clamp(15px, 1.2vw, 17px);
+  font-weight: 700;
+  color: $white;
+  background: $teal-900;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 10px 22px -10px rgba($teal-900, 0.8);
+  cursor: pointer;
+  transition: transform 0.25s $ease-out, box-shadow 0.25s ease, background 0.25s ease;
+
+  /* sheen sweep on hover */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(110deg, transparent, rgba($white, 0.28), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+  }
+
+  &__arrow {
+    display: inline-block;
+    transition: transform 0.25s $ease-out;
+  }
+
+  &:hover:not(:disabled) {
+    background: $teal-800;
+    transform: translateY(-3px);
+    box-shadow: 0 16px 28px -10px rgba($teal-900, 0.85);
+
+    &::before {
+      left: 130%;
+    }
+
+    .cta__arrow {
+      transform: translateX(6px);
+    }
   }
 
   &:focus-visible {
-    outline: 3px solid rgba(19, 183, 209, 0.35);
+    outline: 3px solid rgba($teal-500, 0.55);
     outline-offset: 3px;
   }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 6px 14px -8px rgba($teal-900, 0.9);
+  }
+
+  &:disabled {
+    cursor: progress;
+  }
+
+  /* click animation */
+  &--clicked {
+    animation: ctaPulse 0.32s ease-out;
+
+    .cta__arrow {
+      animation: arrowGo 0.32s ease-in forwards;
+    }
+  }
 }
 
-@keyframes pageEnter {
+/* ===================== Keyframes ===================== */
+@keyframes bannerIn {
   from {
     opacity: 0;
-    transform: translateY(14px) scale(0.985);
+    transform: translateY(-14px);
   }
-
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none;
   }
 }
 
-@keyframes shimmer {
-  0%,
-  65% {
-    transform: translateX(-120%);
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
   }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
+@keyframes ctaPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba($teal-500, 0.7);
+  }
   100% {
-    transform: translateX(120%);
+    box-shadow: 0 0 0 18px rgba($teal-500, 0);
   }
 }
 
-@media (max-width: 960px) {
-  .assessment-shell {
-    width: 100%;
+@keyframes arrowGo {
+  to {
+    transform: translateX(14px);
+    opacity: 0;
   }
 }
 
-@media (max-width: 680px) {
-  .start-assessment-page {
-    align-items: flex-start;
-    padding: 22px 16px;
+/* ===================== Responsive ===================== */
+@media (max-width: 1024px) {
+  .video {
+    max-width: 100%;
   }
+}
 
-  .assessment-shell {
-    width: 100%;
-  }
-
-  .brand-banner {
-    min-height: auto;
+@media (max-width: 768px) {
+  .banner {
     flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .banner-label {
-    align-self: flex-end;
-  }
-
-  .eyebrow {
-    white-space: normal;
-    line-height: 1.35;
-  }
-
-  .brand-title {
-    font-size: 20px;
-  }
-
-  .content-block {
-    padding: 26px 22px 26px;
-  }
-
-  .phase-grid {
-    grid-template-columns: 1fr;
+    align-items: flex-start;
     gap: 12px;
+
+    &__right {
+      flex-direction: row;
+      gap: 6px;
+      align-items: center;
+      text-align: left;
+    }
   }
 
-  .phase-card {
-    min-height: auto;
+  .phases {
+    grid-template-columns: 1fr;
   }
 
-  .action-row {
+  .actions {
     justify-content: stretch;
-    margin-top: 26px;
   }
 
-  .start-btn {
+  .cta {
     width: 100%;
+    justify-content: center;
   }
 }
 
-@media (max-width: 420px) {
-  .start-assessment-page {
-    padding: 14px 10px;
+@media (max-width: 480px) {
+  .banner__badge {
+    font-size: 10px;
+    letter-spacing: 0.08em;
   }
 
-  .brand-banner {
-    border-radius: 16px;
-    padding: 18px;
+  .note {
+    align-items: flex-start;
+    padding: 12px 14px;
   }
+}
 
-  .assessment-card {
-    border-radius: 17px;
-  }
-
-  .content-block {
-    padding: 22px 18px 22px;
-  }
-
-  h1 {
-    font-size: 22px;
-  }
-
-  .description {
-    font-size: 14px;
-  }
-
-  .phase-card {
-    padding: 16px 14px;
-    border-radius: 0 22px 22px 22px;
+/* ===================== Reduced motion ===================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

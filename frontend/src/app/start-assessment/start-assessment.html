@@ -1,69 +1,98 @@
-<section class="start-assessment-page">
-  <div class="assessment-shell">
+<div class="page">
+  <!-- ============ Top gradient banner ============ -->
+  <header class="banner">
+    <div class="banner__left">
+      <span class="banner__badge">{{ badgeText }}</span>
 
-    <header class="brand-banner">
-      <div class="brand-left">
-        <div class="eyebrow">
-          EU ESPR · AHEAD OF THE 2027 DELEGATED ACT
-        </div>
-
-        <div class="brand-title">
-          <span class="drop-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2.8C8.4 6.65 6.4 10.25 6.4 13.55C6.4 17.05 8.9 19.8 12 19.8C15.1 19.8 17.6 17.05 17.6 13.55C17.6 10.25 15.6 6.65 12 2.8Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M12 9.25C10.4 11.1 9.65 12.55 9.65 14.05C9.65 15.65 10.7 16.9 12 16.9C13.3 16.9 14.35 15.65 14.35 14.05C14.35 12.55 13.6 11.1 12 9.25Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
-
-          <span>BluWin × Reput.ai</span>
-        </div>
+      <div class="banner__brand">
+        <svg class="banner__logo" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 2.5c-3.2 4.2-6 7.4-6 11a6 6 0 0 0 12 0c0-3.6-2.8-6.8-6-11Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 9.5c-1.4 1.9-2.6 3.3-2.6 4.8a2.6 2.6 0 0 0 5.2 0c0-1.5-1.2-2.9-2.6-4.8Z"
+            fill="currentColor"
+          />
+        </svg>
+        <span class="banner__name">{{ partnerName }}</span>
+        <span class="banner__times" aria-hidden="true">×</span>
+        <span class="banner__name">{{ brandName }}</span>
       </div>
+    </div>
 
-      <div class="banner-label">
-        DPP<br />
-        READINESS<br />
-        SCAN
-      </div>
-    </header>
+    <div class="banner__right" aria-hidden="true">
+      @for (line of scanLabelLines; track line) {
+        <span>{{ line }}</span>
+      }
+    </div>
+  </header>
 
-    <main class="assessment-card">
-      <div class="content-block">
-        <h1>
-          How ready is your facility for Digital Product Passports?
-        </h1>
+  <!-- ============ Main white card ============ -->
+  <main class="card">
+    <h1 class="card__title">{{ heading }}</h1>
+    <p class="card__desc">{{ description }}</p>
 
-        <p class="description">
-          A short self-assessment mapping what you already collect against the EU DPP's
-          8 mandatory datasets and their core data points — no fresh data collection needed.
-        </p>
+    <!-- Video -->
+    <div class="video">
+      <video
+        class="video__player"
+        controls
+        playsinline
+        preload="metadata"
+        controlsList="nodownload"
+        [poster]="posterSrc"
+      >
+        <source [src]="videoSrc" [type]="videoType" />
+        @if (captionsSrc) {
+          <track kind="captions" [src]="captionsSrc" srclang="en" label="English" default />
+        }
+        Your browser does not support the video tag.
+      </video>
+    </div>
 
-        <div class="phase-grid">
-          @for (item of phases; track item.phase) {
-            <article class="phase-card">
-              <span class="phase-label">{{ item.phase }}</span>
-              <h2>{{ item.title }}</h2>
-              <p>{{ item.description }}</p>
-            </article>
-          }
-        </div>
+    <!-- Reassurance bar -->
+    <div class="note" role="note">
+      <svg class="note__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.2 3.6a.6.6 0 0 1-1-.46V16h-.3A2.5 2.5 0 0 1 3 13.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path d="M8 8.5h8M8 11.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <span>{{ reassurance }}</span>
+    </div>
 
-        <div class="action-row">
-          <button type="button" class="start-btn" (click)="onStartAssessment()">
-            Start assessment
-            <span aria-hidden="true">→</span>
-          </button>
-        </div>
-      </div>
-    </main>
+    <!-- Phases -->
+    <ol class="phases">
+      @for (phase of phases; track trackPhase($index, phase)) {
+        <li class="phase" tabindex="0">
+          <span class="phase__tag">Phase {{ phase.id }}</span>
+          <strong class="phase__title">{{ phase.title }}</strong>
+          <span class="phase__sub">{{ phase.subtitle }}</span>
+        </li>
+      }
+    </ol>
 
-  </div>
-</section>
+    <!-- CTA -->
+    <div class="actions">
+      <button
+        type="button"
+        class="cta"
+        [class.cta--clicked]="starting()"
+        [disabled]="starting()"
+        (click)="onStart()"
+      >
+        <span class="cta__label">{{ buttonLabel }}</span>
+        <span class="cta__arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+  </main>
+</div>

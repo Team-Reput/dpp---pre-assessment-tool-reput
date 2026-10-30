@@ -1,10 +1,18 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 
-interface AssessmentPhase {
-  phase: string;
+export interface AssessmentPhase {
+  id: number;
   title: string;
-  description: string;
+  subtitle: string;
 }
 
 @Component({
@@ -12,29 +20,63 @@ interface AssessmentPhase {
   standalone: true,
    styleUrl: './start-assessment.scss',
   templateUrl: './start-assessment.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StartAssessmentComponent {
+  private readonly router = inject(Router);
+
+  /* ---------- Dynamic content (override from parent if needed) ---------- */
+  @Input() badgeText = 'A tool for the textile industry';
+  @Input() partnerName = 'BluWin';
+  @Input() brandName = 'Reput.ai';
+  @Input() scanLabelLines: string[] = ['DPP', 'READINESS', 'SCAN'];
+
+  @Input() heading = 'How ready is your business for the Digital Product Passport?';
+  @Input() description =
+    'A guided check of what you already hold against the EU’s emerging textile DPP requirements. Yes or no answers, and nothing to upload.';
+
+  @Input() reassurance =
+    'Whatever you have, or don’t have yet, you’re in the right place. We’ll take this one step at a time, together.';
+
+  @Input() buttonLabel = 'Start my assessment';
+
+  /* ---------- Video ---------- */
+  @Input() videoSrc = 'videos/dpp-readiness.mp4';
+  @Input() posterSrc = 'images/dpp-readiness-poster.jpg';
+  @Input() videoType = 'video/mp4';
+  
+  /** Optional WebVTT captions file, e.g. 'assets/videos/dpp-readiness.en.vtt' */
+  @Input() captionsSrc = '';
+
+  /* ---------- Navigation ---------- */
+  /** Route to open when the user clicks "Start my assessment". Leave empty to only emit the event. */
+  @Input() nextRoute = '/assessment/role';
+  @Output() assessmentStarted = new EventEmitter<void>();
+
   readonly phases: AssessmentPhase[] = [
-    {
-      phase: 'PHASE 1',
-      title: 'Tell us what you hold',
-      description: 'Across the 8 core DPP datasets',
-    },
-    {
-      phase: 'PHASE 2',
-      title: 'We check extended coverage',
-      description: 'Against further ESPR data points',
-    },
-    {
-      phase: 'PHASE 3',
-      title: 'Get your readiness score',
-      description: 'Plus a prioritised next-step plan',
-    },
+    { id: 1, title: 'Pick your role', subtitle: 'Brand, or a supply-chain tier' },
+    { id: 2, title: 'Answer yes or no', subtitle: 'Questions made for your role' },
+    { id: 3, title: 'Get your score', subtitle: 'Plus your next step with us' },
   ];
 
-  constructor(private router: Router) {}
+  /** Drives the short click animation on the CTA */
+  readonly starting = signal(false);
 
-  onStartAssessment(): void {
-    this.router.navigate(['/contact']);
+  onStart(): void {
+    if (this.starting()) return;
+    this.starting.set(true);
+
+    // let the click animation play before moving on
+    setTimeout(() => {
+      this.assessmentStarted.emit();
+      if (this.nextRoute) {
+        this.router.navigateByUrl(this.nextRoute);
+      }
+      this.starting.set(false);
+    }, 320);
+  }
+
+  trackPhase(_: number, phase: AssessmentPhase): number {
+    return phase.id;
   }
 }

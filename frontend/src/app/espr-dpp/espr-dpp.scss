@@ -1,0 +1,107 @@
+/* Colour tokens, fonts and the card/header come from AssessmentShellComponent. */
+@mixin hv($extra: '') {
+  @media (hover: hover) and (pointer: fine) { &:hover#{$extra} { @content; } }
+}
+@mixin hvf {
+  @media (hover: hover) and (pointer: fine) { &:hover { @content; } }
+  &:focus-visible { @content; }
+}
+
+:host { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+h1, p { margin: 0; }
+button { font-family: inherit; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2.5px solid var(--teal-bright); outline-offset: 2px; }
+
+.screen { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.screen.enter { animation: screenIn 0.35s ease both; }
+
+h1 { font-size: 23px; font-weight: 700; line-height: 1.3; color: var(--teal-deep); margin-bottom: 8px; letter-spacing: -0.01em; text-wrap: balance; }
+.sub { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin-bottom: 18px; }
+
+/* ---------- Tabs ---------- */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.tab {
+  border: 1.5px solid var(--line); background: var(--paper); color: var(--ink);
+  font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+  @include hv { border-color: var(--teal-bright); transform: translateY(-1px); box-shadow: 0 6px 12px -8px rgba(11, 92, 104, 0.5); }
+  &:active { transform: scale(0.97); }
+  &.active { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; box-shadow: none; }
+}
+
+.tab-card {
+  border: 1.5px solid var(--line); background: var(--line-soft); border-radius: 14px;
+  padding: 16px 18px; margin-bottom: 22px; min-height: 112px; animation: screenIn 0.3s ease both;
+  .key { font-size: 15px; font-weight: 700; color: var(--teal-deep); line-height: 1.4; margin-bottom: 6px; }
+  .more { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+}
+
+/* ---------- Who supplies what ---------- */
+.mini-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal-solid); font-weight: 700; margin-bottom: 10px; }
+.ladder { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.rung {
+  border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 12px; padding: 8px 12px;
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+  @include hv { border-color: var(--teal-bright); transform: translateY(-1px); }
+  &:active { transform: scale(0.97); }
+  &.active { border-color: var(--teal-solid); background: rgba(0, 176, 209, 0.09); color: var(--teal-deep); }
+}
+.ladder-out {
+  font-size: 13px; line-height: 1.55; color: var(--ink-soft); padding: 12px 14px; min-height: 44px;
+  border-left: 3px solid var(--teal-bright); background: var(--line-soft); border-radius: 0 10px 10px 0;
+  b { color: var(--ink); }
+}
+.ladder-text { display: block; animation: screenIn 0.25s ease both; }
+
+/* ---------- Assure ---------- */
+.assure {
+  display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; padding: 10px 12px;
+  background: rgba(3, 146, 151, 0.07); border: 1px solid rgba(3, 146, 151, 0.2); border-radius: 12px;
+  font-size: 12.5px; line-height: 1.5; color: var(--teal-deep);
+  svg { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
+}
+
+/* ---------- Nav ---------- */
+.nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 24px; }
+.btn {
+  font-size: 14px; font-weight: 600; padding: 12px 22px; border-radius: 11px; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; position: relative; overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.2s, filter 0.2s, color 0.15s;
+  &:active { transform: scale(0.97); }
+}
+.btn-ghost {
+  background: transparent; color: var(--ink-soft); padding: 12px 8px;
+  .arrow-back { display: inline-block; transition: transform 0.2s; }
+  @include hv { color: var(--teal-dark); .arrow-back { transform: translateX(-4px); } }
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal-deep)); color: #fff;
+  box-shadow: 0 6px 16px -6px rgba(11, 59, 77, 0.5);
+  &::before {
+    content: ''; position: absolute; top: 0; left: -80%; width: 60%; height: 100%;
+    background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    transform: skewX(-20deg); transition: left 0.6s ease;
+  }
+  .arrow { display: inline-block; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+  @include hv { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 12px 22px -8px rgba(11, 59, 77, 0.6); &::before { left: 130%; } .arrow { transform: translateX(5px); } }
+  &:active { transform: scale(0.97); }
+}
+
+@keyframes screenIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Responsive ---------- */
+@media (min-width: 1000px) { h1, .sub { max-width: 900px; } }
+@media (max-width: 380px) { h1 { font-size: 20px; } .sub { font-size: 13.5px; } }
+@media (max-width: 520px) {
+  .tabs, .ladder { gap: 8px; }
+  /* comfortable 44px touch targets */
+  .tab { padding: 10px 14px; font-size: 13px; min-height: 44px; }
+  .rung { min-height: 44px; padding: 10px 14px; }
+  .btn { min-height: 48px; }
+  .tab-card { min-height: 0; padding: 14px; }
+  .nav { flex-direction: column-reverse; align-items: stretch; .btn { width: 100%; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; }
+}
