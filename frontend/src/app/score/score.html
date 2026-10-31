@@ -84,6 +84,11 @@
               </svg>
             </div>
             <div class="band-sub">{{ band.sub }}</div>
+                        @if (apiTotal > 0) {
+              <div class="band-scope">
+                Answered {{ apiAnswered }} of {{ apiTotal }} questions · {{ apiYes }} Yes
+              </div>
+            }
             <div class="band-scope">
               Scope:
               {{
