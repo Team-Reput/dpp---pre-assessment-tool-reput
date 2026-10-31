@@ -125,12 +125,18 @@ export class Contact {
           full_name: trimmedName,
           company: trimmedCompany,
           email: trimmedEmail,
+          role: '',
+          tier_level: '',
+          export_market_country: '',
         })
         .subscribe({
           next: (response: any) => {
             // When the reply arrives, keep the ass_id for the later screens
-            if (response.success && response.data?.ass_id) {
-              this.assessmentState.setAssId(response.data.ass_id);
+            const assId =
+              response?.data?.ass_id ??
+              (typeof response?.data === 'number' ? response.data : null);
+            if (response?.success && assId) {
+              this.assessmentState.setAssId(Number(assId));
               this.savedKey = key;
             }
           },

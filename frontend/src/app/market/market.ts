@@ -6,7 +6,6 @@ import {
   MARKET_OPTIONS,
   ASSURE,
 } from '../shared/assessment-state.service';
-import { ProfileService } from '../profile/profile.service';
 
 export const DUMMY_DATA = {
   eyebrow: 'A Tool for the Textile Industry',
@@ -33,8 +32,7 @@ export class Market {
 
   constructor(
     private router: Router,
-    public assessmentState: AssessmentStateService,
-    private profileService: ProfileService
+    public assessmentState: AssessmentStateService
   ) {}
 
   get selectedMarkets(): string[] {
@@ -63,28 +61,6 @@ export class Market {
 
   onContinue(): void {
     if (!this.selectedMarkets.length) return;
-
-    const assId = this.assessmentState.getAssId();
-    if (assId) {
-      const p = this.assessmentState.profile();
-      const isSupplier = p.persona === 'supplier';
-      this.profileService
-        .saveProfile({
-          ass_id: assId,
-          assessing_scope: isSupplier
-            ? 'Supply Chain Partner'
-            : 'A brand, assessing a single product',
-          product_category: isSupplier ? '' : 'Apparel & garments',
-          primary_product_category: isSupplier
-            ? p.tier || 'tier1'
-            : 'Apparel & garments',
-          export_volume: '1M – 10M units / year',
-          export_markets: this.selectedMarkets.join(','),
-          tier: isSupplier ? p.tier || 'tier1' : p.visibility || 'tier1',
-        })
-        .subscribe({ error: () => {} });
-    }
-
     this.router.navigate([this.assessmentState.getNextRoute('market')]);
   }
 }

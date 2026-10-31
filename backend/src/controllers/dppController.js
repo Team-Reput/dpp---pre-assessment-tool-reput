@@ -92,7 +92,14 @@ const insertContactDetails = async (req, res) => {
 
     const result = await pool.query(
       'SELECT dbo.fn_insert_assessment_contact($1, $2, $3, $4, $5, $6) AS result',
-      [full_name, company, email, role, tier_level, export_market_country]
+      [
+        full_name,
+        company,
+        email,
+        role || null,
+        tier_level || null,
+        export_market_country || null,
+      ]
     );
 
     // The DB function returns JSON: { success, status_code, message, data }
@@ -108,15 +115,43 @@ const insertContactDetails = async (req, res) => {
 // POST /api/contact-details/profile
 const updateContactProfile = async (req, res) => {
   try {
-    const { ass_id, role, tier_level, export_market_country } = req.body;
+    const ass_id = parseInt(req.body.ass_id, 10);
+    const { role, tier_level, export_market_country } = req.body;
+
+    if (!Number.isInteger(ass_id)) {
+      return res.status(400).json({
+        success: false,
+        status_code: 400,
+        message: 'Valid ass_id is required',
+        data: null,
+      });
+    }
 
     const result = await pool.query(
-      'SELECT dbo.fn_update_assessment_contact_profile($1, $2, $3, $4) AS result',
-      [ass_id, role, tier_level, export_market_country]
+      `UPDATE dbo.assessment_contact
+       SET role = COALESCE(NULLIF($2, ''), role),
+           tier_level = COALESCE(NULLIF($3, ''), tier_level),
+           export_market_country = COALESCE(NULLIF($4, ''), export_market_country)
+       WHERE ass_id = $1
+       RETURNING ass_id, role, tier_level, export_market_country`,
+      [ass_id, role ?? null, tier_level ?? null, export_market_country ?? null]
     );
 
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        status_code: 404,
+        message: 'Assessment contact not found',
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      status_code: 200,
+      message: 'Contact profile updated successfully',
+      data: result.rows[0],
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
@@ -237,6 +272,7 @@ const emailReport = async (req, res) => {
 
 module.exports = {
   insertContactDetails,
+  insertAssessmentContact: insertContactDetails,
   updateContactProfile,
   getAllQuestions,
   insertAnsweredQue,

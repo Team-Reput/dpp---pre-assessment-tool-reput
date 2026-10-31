@@ -8,7 +8,6 @@ import {
   ASSURE,
   OptionItem,
 } from '../shared/assessment-state.service';
-import { ProfileService } from '../profile/profile.service';
 
 export const DUMMY_DATA = {
   eyebrow: 'A Tool for the Textile Industry',
@@ -38,8 +37,7 @@ export class TierFollow {
 
   constructor(
     private router: Router,
-    public assessmentState: AssessmentStateService,
-    private profileService: ProfileService
+    public assessmentState: AssessmentStateService
   ) {}
 
   get isBrand(): boolean {
@@ -77,22 +75,6 @@ export class TierFollow {
 
   onContinue(): void {
     if (!this.currentSelection) return;
-
-    const assId = this.assessmentState.getAssId();
-    if (assId && !this.isBrand) {
-      this.profileService
-        .saveProfile({
-          ass_id: assId,
-          assessing_scope: 'Supply Chain Partner',
-          product_category: '',
-          primary_product_category: this.currentSelection,
-          export_volume: '1M – 10M units / year',
-          export_markets: 'EU',
-          tier: this.currentSelection,
-        })
-        .subscribe({ error: () => {} });
-    }
-
     this.router.navigate([this.assessmentState.getNextRoute('tierfollow')]);
   }
 }
