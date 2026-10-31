@@ -1,340 +1,245 @@
+// ── Imports (always at the top) ──────────────────────────────
 const pool = require('../config/db');
-
-const insertAssessmentContact = async (req, res) => {
-  try {
-    const { full_name, company, email } = req.body;
-
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_assessment_contact($1, $2, $3) AS result',
-      [full_name, company, email]
-    );
-
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      status_code: 500,
-      message: 'Something went wrong',
-      data: null,
-    });
-  }
-};
-
-//module.exports = { insertAssessmentContact };
-
-
-
-const insertProfile = async (req, res) => {
-  try {
-    const {
-      ass_id,
-      assessing_scope,
-      product_category,
-      primary_product_category,
-      export_volume,
-      export_markets, // expects a comma-separated string, e.g. "EU,UK,USA"
-      tier,
-    } = req.body;
-
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_assessment_profile($1, $2, $3, $4, $5, $6, $7) AS result',
-      [ass_id, assessing_scope, product_category, primary_product_category, export_volume, export_markets, tier]
-    );
-
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      status_code: 500,
-      message: 'Something went wrong',
-      data: null,
-    });
-  }
-};
-
-const insertIdentification = async(req, res)=>{
-  try{
-    const{ass_id, status, data} = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_product_identification($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  }catch(err){
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      status_code: 500,
-      message: 'Something went wrong',
-      data: null,
-    });
-  }
-}
-
-const insertMaterialComposition = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_material_composition($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      status_code: 500,
-      message: 'Something went wrong',
-      data: null,
-    });
-  }
-};
-
-
-// ── Material Origin ──────────────────────────────────────────
-const insertMaterialOrigin = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_material_origin($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-// ── Supply Chain Data ────────────────────────────────────────
-const insertSupplyChainData = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_supply_chain_data($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-// ── Traceability Data ────────────────────────────────────────
-const insertTraceabilityData = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_traceability_data($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-// ── Sustainability Data ──────────────────────────────────────
-const insertSustainabilityData = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_sustainability_data($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-// ── Compliance Certification ─────────────────────────────────
-const insertComplianceCertification = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_compliance_certification($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-// ── Social Labor Data ────────────────────────────────────────
-const insertSocialLaborData = async (req, res) => {
-  try {
-    const { ass_id, status, data } = req.body;
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_social_labor_data($1, $2, $3) AS result',
-      [ass_id, status, data]
-    );
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-const insertExtendedData = async (req, res) => {
-  try {
-    const { ass_id, data_points } = req.body;
-
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_assessment_extended_data($1, $2) AS result',
-      [ass_id, data_points]
-    );
-
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-const insertAssessmentStructure = async (req, res) => {
-  try {
-    const { ass_id, structure } = req.body;
-
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_insert_assessment_structure($1, $2) AS result',
-      [ass_id, structure]
-    );
-
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-
-const getAssessmentScore = async (req, res) => {
-  try {
-    const { ass_id } = req.params;
-
-    const result = await pool.query(
-      'SELECT dbo.fn_usp_get_assessment_score($1) AS result',
-      [ass_id]
-    );
-
-    const response = result.rows[0].result;
-    res.status(response.status_code).json(response);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
-  }
-};
-
-
 const nodemailer = require('nodemailer');
 
-const emailReport = async (req, res) => {
+// ── Helpers ──────────────────────────────────────────────────
+
+// Reads the score row from the DB function and turns the text numbers
+// into real numbers (Postgres sends bigint/numeric as strings).
+// dbo.fn_get_assessment_score returns a TABLE row, not JSON.
+const fetchScore = async (ass_id) => {
+  const result = await pool.query('SELECT * FROM dbo.fn_get_assessment_score($1)', [ass_id]);
+  if (result.rows.length === 0) return null;
+  const r = result.rows[0];
+  return {
+    ass_id: Number(r.ass_id),
+    total_questions: Number(r.total_questions),
+    yes_count: Number(r.yes_count),
+    no_count: Number(r.no_count),
+    earned_points: Number(r.earned_points),
+    max_points: Number(r.max_points),
+    score_percentage: Number(r.score_percentage),
+  };
+};
+
+// Small helper so names containing < or & cannot break the email HTML
+const esc = (s) =>
+  String(s ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[c]));
+
+// Emails the report to the address saved at contact time.
+// The address always comes from the database, never from the request.
+const sendReportEmail = async (ass_id, score) => {
+  // 1) Find the email that was saved in /api/contact-details
+  const contactResult = await pool.query(
+    'SELECT full_name, email FROM dbo.assessment_contact WHERE ass_id = $1',
+    [ass_id]
+  );
+  if (contactResult.rows.length === 0) {
+    console.error('No contact found for ass_id', ass_id);
+    return;
+  }
+  const { full_name, email } = contactResult.rows[0];
+
+  // 2) Stop early if email settings are missing in .env
+  const missingSmtp = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'].filter(
+    (k) => !process.env[k]
+  );
+  if (missingSmtp.length > 0) {
+    console.error('Email not configured, missing env vars:', missingSmtp.join(', '));
+    return;
+  }
+
+  // 3) Build the email body from the score
+  const emailHtml = `
+    <h2>Your DPP Readiness Report</h2>
+    <p>Hi ${esc(full_name)},</p>
+    <p>Your overall readiness score is <strong>${score.score_percentage}%</strong>.</p>
+    <ul>
+      <li>Questions answered: ${score.total_questions}</li>
+      <li>Yes: ${score.yes_count}</li>
+      <li>No: ${score.no_count}</li>
+    </ul>
+    <p>— BluWin × Reput.ai</p>
+  `;
+
+  // 4) Send it
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM,
+    to: email,
+    subject: 'Your DPP Readiness Report',
+    html: emailHtml,
+  });
+};
+
+// ── Insert Contact Details ───────────────────────────────────
+// POST /api/contact-details
+const insertContactDetails = async (req, res) => {
   try {
-    const { ass_id } = req.body;
+    const { full_name, company, email, role, tier_level, export_market_country } = req.body;
 
-    const contactResult = await pool.query(
-      'SELECT full_name, email FROM dbo.assessment_contact WHERE ass_id = $1',
-      [ass_id]
+    const result = await pool.query(
+      'SELECT dbo.fn_insert_assessment_contact($1, $2, $3, $4, $5, $6) AS result',
+      [full_name, company, email, role, tier_level, export_market_country]
     );
 
-    if (contactResult.rows.length === 0) {
-      return res.status(404).json({ success: false, status_code: 404, message: 'Contact not found', data: null });
-    }
-
-    const { full_name, email } = contactResult.rows[0];
-
-    const scoreResult = await pool.query(
-      'SELECT dbo.fn_usp_get_assessment_score($1) AS result',
-      [ass_id]
-    );
-    const scoreData = scoreResult.rows[0].result.data;
-
-    const sectionsHtml = Object.entries(scoreData.sections)
-      .map(([key, value]) => `<li>${key.replace(/_/g, ' ')}: ${value}%</li>`)
-      .join('');
-
-    const emailHtml = `
-      <h2>Your DPP Readiness Report</h2>
-      <p>Hi ${full_name},</p>
-      <p>Your overall readiness score is <strong>${scoreData.overall_score}%</strong>.</p>
-      <h3>Breakdown:</h3>
-      <ul>${sectionsHtml}</ul>
-      <p>— BluWin × Reput.ai</p>
-    `;
-
-    // Without SMTP_HOST nodemailer silently falls back to 127.0.0.1:587 (ECONNREFUSED inside the container)
-    const missingSmtp = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'].filter((k) => !process.env[k]);
-    if (missingSmtp.length > 0) {
-      console.error('Email not configured, missing env vars:', missingSmtp.join(', '));
-      return res.status(500).json({ success: false, status_code: 500, message: 'Email service is not configured', data: null });
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
-    // Respond to the user immediately — don't make them wait for Gmail's SMTP handshake
-    res.status(200).json({ success: true, status_code: 200, message: 'Report is being sent', data: { email } });
-
-    // Send the actual email AFTER responding — runs in the background
-    transporter.sendMail({
-      from: process.env.SMTP_FROM,
-      to: email,
-      subject: 'Your DPP Readiness Report',
-      html: emailHtml,
-    }).catch((err) => {
-      console.error('Background email send failed:', err);
-    });
-
+    // The DB function returns JSON: { success, status_code, message, data }
+    const response = result.rows[0].result;
+    res.status(response.status_code).json(response);
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
   }
 };
 
+// ── Update role / tier / markets on the contact row ──────────
+// POST /api/contact-details/profile
+const updateContactProfile = async (req, res) => {
+  try {
+    const { ass_id, role, tier_level, export_market_country } = req.body;
 
+    const result = await pool.query(
+      'SELECT dbo.fn_update_assessment_contact_profile($1, $2, $3, $4) AS result',
+      [ass_id, role, tier_level, export_market_country]
+    );
+
+    const response = result.rows[0].result;
+    res.status(response.status_code).json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
+  }
+};
+
+// ── Get All Questions ────────────────────────────────────────
+// GET /api/questions
+const getAllQuestions = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM dbo.fn_get_all_questions()');
+
+    // The list rarely changes, so the browser may reuse it for 5 minutes
+    res.set('Cache-Control', 'public, max-age=300');
+
+    res.status(200).json({
+      success: true,
+      status_code: 200,
+      message: 'Questions fetched successfully',
+      data: result.rows,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
+  }
+};
+
+// ── Insert Answered Question ─────────────────────────────────
+// POST /api/answered-que
+// The DB function returns a plain number (que_id), not JSON,
+// so we build the response here.
+const insertAnsweredQue = async (req, res) => {
+  try {
+    const { ass_id, role, tier_level, que_id, ans } = req.body;
+
+    // Basic check before touching the database
+    if (!ass_id || !que_id || !['Yes', 'No'].includes(ans)) {
+      return res.status(400).json({
+        success: false,
+        status_code: 400,
+        message: 'ass_id, que_id and ans (Yes or No) are required',
+        data: null,
+      });
+    }
+
+    await pool.query(
+      'SELECT dbo.fn_insert_answered_que($1, $2, $3, $4, $5) AS result',
+      [ass_id, role, tier_level, que_id, ans]
+    );
+
+    res.status(200).json({ success: true, status_code: 200, message: 'Answer saved', data: { que_id } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
+  }
+};
+
+// ── Get Assessment Score (+ optional email) ──────────────────
+// GET /api/score/:ass_id            → score only
+// GET /api/score/:ass_id?send_email=true → score + email the report
+const getAssessmentScoreV2 = async (req, res) => {
+  try {
+    const ass_id = parseInt(req.params.ass_id, 10);
+    if (!Number.isInteger(ass_id)) {
+      return res.status(400).json({ success: false, status_code: 400, message: 'Invalid ass_id', data: null });
+    }
+
+    const score = await fetchScore(ass_id);
+    if (!score) {
+      return res
+        .status(404)
+        .json({ success: false, status_code: 404, message: 'No score found for this assessment', data: null });
+    }
+
+    // Reply first so the user does not wait for the email
+    res.status(200).json({ success: true, status_code: 200, message: 'Score fetched successfully', data: score });
+
+    // Email only when the frontend sent ?send_email=true
+    if (req.query.send_email === 'true') {
+      sendReportEmail(ass_id, score).catch((err) => {
+        console.error('Background email send failed:', err);
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
+  }
+};
+
+// ── Email Report ("Email me the full report" button) ─────────
+// POST /api/email-report   body: { ass_id }
+// Reuses the same helper, so the email logic lives in one place
+const emailReport = async (req, res) => {
+  try {
+    const ass_id = parseInt(req.body.ass_id, 10);
+    if (!Number.isInteger(ass_id)) {
+      return res.status(400).json({ success: false, status_code: 400, message: 'Invalid ass_id', data: null });
+    }
+
+    const score = await fetchScore(ass_id);
+    if (!score) {
+      return res
+        .status(404)
+        .json({ success: false, status_code: 404, message: 'No score found for this assessment', data: null });
+    }
+
+    // Reply first, then send the email in the background
+    res.status(200).json({ success: true, status_code: 200, message: 'Report is being sent', data: null });
+
+    sendReportEmail(ass_id, score).catch((err) => {
+      console.error('Background email send failed:', err);
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, status_code: 500, message: 'Something went wrong', data: null });
+  }
+};
 
 module.exports = {
-  insertAssessmentContact,
-  insertProfile,
-  insertIdentification,
-  insertMaterialComposition,
-  insertMaterialOrigin,
-  insertSupplyChainData,
-  insertTraceabilityData,
-  insertSustainabilityData,
-  insertComplianceCertification,
-  insertSocialLaborData,
-  insertExtendedData,
-  insertAssessmentStructure, 
-  getAssessmentScore,
-  emailReport,  // ⬅ add here
+  insertContactDetails,
+  updateContactProfile,
+  getAllQuestions,
+  insertAnsweredQue,
+  getAssessmentScoreV2,
+  emailReport,
 };

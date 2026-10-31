@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getAssessmentScore } = require('../controllers/dppController');
+const { getAssessmentScoreV2 } = require('../controllers/dppController');
 
-router.get('/:ass_id', getAssessmentScore);   // GET, not POST — this only reads data
+// GET because we only read the score. :ass_id is a variable part of the URL.
+router.get('/:ass_id', getAssessmentScoreV2);
 
 module.exports = router;

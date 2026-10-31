@@ -3,57 +3,26 @@ const cors = require('cors');
 require('dotenv').config();
 
 const pool = require('./config/db'); // keeps db connection test running
-const contactRoutes = require('./routes/assessment-contact');
 
 const app = express();
 
-//app.use(cors());
+// ── Middleware (runs on every request) ───────────────────────
 app.use(cors({
   origin: ['http://localhost:4200', 'https://scan.dppreput.com'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
+app.use(express.json());   // lets Express read JSON from req.body
 
-app.use(express.json());
+// ── Routes ───────────────────────────────────────────────────
+app.use('/api/contact-details', require('./routes/contact-details'));
+app.use('/api/questions',       require('./routes/questions'));
+app.use('/api/answered-que',    require('./routes/answered-que'));
+app.use('/api/score',           require('./routes/score'));
+app.use('/api/email-report',    require('./routes/email-report'));
 
-app.use('/api/assessment-contact', contactRoutes);
-
-
+// ── Start server (always last) ───────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
-const profileRoutes = require('./routes/profile');
-app.use('/api/profile', profileRoutes);
-
-const identificationRoutes = require('./routes/identification');
-app.use('/api/identification', identificationRoutes);
-
-const materialCompRoutes = require('./routes/material-comp');
-app.use('/api/material-comp', materialCompRoutes);
-
-const materialOriginRoutes = require('./routes/material-origin');
-const supplyChainRoutes = require('./routes/supply-chain');
-const traceabilityRoutes = require('./routes/traceability');
-const sustainabilityRoutes = require('./routes/sustainability');
-const complianceRoutes = require('./routes/compliance');
-const socialLaborRoutes = require('./routes/social-labor');
-
-app.use('/api/material-origin', materialOriginRoutes);
-app.use('/api/supply-chain', supplyChainRoutes);
-app.use('/api/traceability', traceabilityRoutes);
-app.use('/api/sustainability', sustainabilityRoutes);
-app.use('/api/compliance', complianceRoutes);
-app.use('/api/social-labor', socialLaborRoutes);
-
-const extendedDataRoutes = require('./routes/extended-data');
-app.use('/api/extended-data', extendedDataRoutes);
-const structureRoutes = require('./routes/structure');
-app.use('/api/structure', structureRoutes);
-
-const scoreRoutes = require('./routes/score');
-app.use('/api/score', scoreRoutes);
-
-const emailReportRoutes = require('./routes/email-report');
-app.use('/api/email-report', emailReportRoutes);
