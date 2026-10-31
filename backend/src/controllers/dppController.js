@@ -14,14 +14,11 @@ const fetchScore = async (ass_id) => {
   return {
     ass_id: Number(r.ass_id),
     total_questions: Number(r.total_questions),
+    answered_count: Number(r.answered_count),
     yes_count: Number(r.yes_count),
-    no_count: Number(r.no_count),
-    earned_points: Number(r.earned_points),
-    max_points: Number(r.max_points),
     score_percentage: Number(r.score_percentage),
   };
 };
-
 // Small helper so names containing < or & cannot break the email HTML
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({
