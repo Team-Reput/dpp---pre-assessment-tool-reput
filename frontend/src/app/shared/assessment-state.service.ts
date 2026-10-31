@@ -1,4 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject, effect, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { QuestionService, ApiQuestion } from './question.service';
+import { ContactService } from '../contact/contact.service';
 
 export type PersonaKey = 'brand' | 'tier1' | 'tier2' | 'tier3' | 'chemical';
 
@@ -557,6 +560,111 @@ export class AssessmentStateService {
   private assId: number | null = null;
   private scoreData: any = null;
 
+  private qs = inject(QuestionService);
+  private contactApi = inject(ContactService);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  private saveTimers = new Map<number, ReturnType<typeof setTimeout>>();
+  private profileTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastProfileKey = '';
+
+  constructor() {
+    // Runs whenever the user picks something on profile / tier-follow / market
+    effect(() => {
+      this.profile(); // reading the signals makes the effect re-run when they change
+      this.markets();
+      this.saveProfileToApi();
+    });
+  }
+
+  // Saves role, tier_level and export_market_country to assessment_contact.
+  // Waits 600 ms so quick clicks (choosing several markets) become ONE request.
+  private saveProfileToApi(): void {
+    if (!this.isBrowser) return; // never on the server (SSR)
+    if (this.profileTimer) clearTimeout(this.profileTimer);
+
+    this.profileTimer = setTimeout(() => {
+      const assId = this.getAssId(); // read now: ass_id may arrive a moment late
+      if (!assId) return;
+      if (!this.profile().persona) return; // nothing chosen yet
+
+      const { role, tier_level } = this.dbProfile();
+      const export_market_country = this.markets().join(', ');
+
+      // Skip if nothing changed since the last save
+      const key = `${assId}|${role}|${tier_level}|${export_market_country}`;
+      if (key === this.lastProfileKey) return;
+      this.lastProfileKey = key;
+
+      this.contactApi
+        .saveProfile({ ass_id: assId, role, tier_level, export_market_country })
+        .subscribe({
+          error: (e: unknown) => {
+            this.lastProfileKey = ''; // allow a retry on the next change
+            console.error('Save profile failed', e);
+          },
+        });
+    }, 600);
+  }
+
+  // Converts your screen choices into the words stored in the database
+  private dbProfile(): { role: string; tier_level: string } {
+    const p = this.profile();
+    if (p.persona === 'supplier') {
+      return { role: 'Supplier', tier_level: p.tier ? TIER_LABELS[p.tier] : '' };
+    }
+    const brandTier: Record<string, string> = {
+      tier1: 'Tier 1 only',
+      tier12: 'Tier 1 + Tier 2',
+      tier123: 'Tier 1 + 2 + 3',
+      unsure: 'Not sure',
+    };
+    return { role: 'Brand', tier_level: p.visibility ? brandTier[p.visibility] : '' };
+  }
+
+  // The API questions for one screen (section), in the right order
+  private apiRowsFor(catKey: string): ApiQuestion[] {
+    const cat = TECHNICAL_CATEGORIES.find((c) => c.key === catKey);
+    if (!cat) return [];
+    const { role, tier_level } = this.dbProfile();
+    const norm = (s: string) => String(s ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
+    return this.qs
+      .rows()
+      .filter(
+        (r) => r.role === role && r.tier_level === tier_level && norm(r.section_name) === norm(cat.label)
+      )
+      .sort((a, b) => a.que_id - b.que_id);
+  }
+
+  // Saves one answer to the database
+  private saveAnswerToApi(catKey: string, index: number, value: boolean): void {
+    const assId = this.getAssId();
+    if (!assId) {
+      console.warn('No ass_id yet, answer not saved');
+      return;
+    }
+    const row = this.apiRowsFor(catKey)[index];
+    if (!row) {
+      console.warn('No que_id found for', catKey, index);
+      return;
+    }
+    const prev = this.saveTimers.get(row.que_id);
+    if (prev) clearTimeout(prev);
+    this.saveTimers.set(
+      row.que_id,
+      setTimeout(() => {
+        this.saveTimers.delete(row.que_id);
+        this.qs.save({
+          ass_id: assId,
+          role: row.role,
+          tier_level: row.tier_level,
+          que_id: row.que_id,
+          ans: value ? 'Yes' : 'No',
+        });
+      }, 400)
+    );
+  }
+
   readonly contact = signal<{ name: string; company: string; email: string }>({
     name: '',
     company: '',
@@ -580,6 +688,7 @@ export class AssessmentStateService {
   );
 
   readonly demoBooked = signal<boolean>(false);
+
   readonly referrals = signal<
     Array<{ supplierName: string; supplierEmail: string; tier: string }>
   >([]);
@@ -594,6 +703,7 @@ export class AssessmentStateService {
 
   setAssId(id: number): void {
     this.assId = id;
+    this.saveProfileToApi();
   }
 
   getAssId(): number | null {
@@ -667,6 +777,10 @@ export class AssessmentStateService {
   }
 
   getCategoryItems(catKey: string): string[] {
+    const apiRows = this.apiRowsFor(catKey);
+    if (apiRows.length) return apiRows.map((r) => r.question); // from the database
+
+    // fallback: the old hardcoded text
     const cat = TECHNICAL_CATEGORIES.find((c) => c.key === catKey);
     const pk = this.personaKey();
     return cat ? cat.items[pk] || [] : [];
@@ -701,6 +815,7 @@ export class AssessmentStateService {
       ...d,
       [catKey]: { answers },
     }));
+    this.saveAnswerToApi(catKey, index, value);
   }
 
   setAnswer(catKey: string, index: number, value: boolean): void {
@@ -740,7 +855,7 @@ export class AssessmentStateService {
       stepNumber: idx + 1,
       totalSteps: qf.length,
       tag,
-      segments,
+      segments: segments as Array<'done' | 'active' | ''>,
     };
   }
 
@@ -901,6 +1016,7 @@ export class AssessmentStateService {
 
   restart(): void {
     this.profile.set({ persona: '', tier: '', visibility: '' });
+    this.assId = null;
     this.markets.set([]);
     this.contact.set({ name: '', company: '', email: '' });
     this.demoBooked.set(false);

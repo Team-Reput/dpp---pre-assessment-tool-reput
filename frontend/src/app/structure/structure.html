@@ -16,7 +16,7 @@
     </div>
     <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
   </header>
-
+ 
   <main class="card" id="card">
     <div class="rail" id="rail">
       @for (seg of segments; track seg) {
@@ -39,7 +39,7 @@
             <span class="fwd-badge">Advanced readiness</span>
           }
         </p>
-
+ 
         <div class="assure">
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
@@ -47,12 +47,12 @@
           </svg>
           <span>{{ data.sectionGuide }}</span>
         </div>
-
+ 
         <div class="q-progress">
           <div class="q-bar"><i id="qBar" [style.width.%]="progressPct"></i></div>
           <div class="q-count" id="qCount">{{ answeredCount }} of {{ items.length }} answered</div>
         </div>
-
+ 
         <div class="qlist" id="qlist">
           @for (item of items; track $index; let i = $index) {
             <div
@@ -84,12 +84,12 @@
             </div>
           }
         </div>
-
+ 
         <div class="help-note" id="helpNote" [hidden]="!showHelpNote">
           <span class="help-label">How we can help</span>
           <span id="helpText">{{ data.helpNote }}</span>
         </div>
-
+ 
         <div class="nav">
           <button type="button" class="btn btn-ghost" (click)="onBack()">← Back</button>
           <div class="nav-hint" id="navHint">{{ navHint }}</div>
@@ -100,3 +100,4 @@
   </main>
 </div>
 <app-shirt-dock></app-shirt-dock>
+ 

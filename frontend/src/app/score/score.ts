@@ -14,6 +14,7 @@ import {
   ScoreRow,
 } from '../shared/assessment-state.service';
 import { ShirtDockComponent } from '../shared/shirt-dock/shirt-dock';
+import { ScoreService } from './score.service';   // ⬅ NEW: change the path if your service file is elsewhere
 
 export const DUMMY_DATA = {
   eyebrow: 'A Tool for the Textile Industry',
@@ -41,6 +42,7 @@ export const DUMMY_DATA = {
 export class Score implements OnInit, OnDestroy {
   readonly data = DUMMY_DATA;
   private platformId = inject(PLATFORM_ID);
+  private scoreService = inject(ScoreService);   // ⬅ NEW
 
   // Gauge geometry matching gaugeSVG(pct, color)
   readonly r = 62;
@@ -48,6 +50,11 @@ export class Score implements OnInit, OnDestroy {
   readonly cy = 90;
   readonly circ = 2 * Math.PI * 62;
   readonly arc = 2 * Math.PI * 62 * 0.75;
+
+  // ⬅ NEW: score from the API. While null (loading or failed), the local calculation is used.
+  private apiSummary: { total: number; max: number; rows: ScoreRow[] } | null = null;
+  loadingScore = true;
+  scoreError = '';
 
   // Supplier referral form state
   refFormOpen = false;
@@ -74,9 +81,11 @@ export class Score implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.saveSubmission();
-    }
+    // Browser only, so SSR does not send a second request from the server
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.saveSubmission();
+    this.loadScore();   // ⬅ NEW
   }
 
   ngOnDestroy(): void {
@@ -87,8 +96,48 @@ export class Score implements OnInit, OnDestroy {
     }
   }
 
+  // ── NEW: load the score from the backend (one GET request, no retries) ──
+  private loadScore(): void {
+   const assId = this.state.getAssId();   // ⚠ check this name in assessment-state.service.ts
+    if (!assId) {
+      this.loadingScore = false;
+      this.scoreError = 'We could not find your assessment. Please go back and enter your details again.';
+      return;
+    }
+
+    this.scoreService.getScore(assId).subscribe({
+      next: (res) => {
+        this.loadingScore = false;
+        if (res?.success && res.data) {
+          this.apiSummary = this.mapApiToSummary(res.data);
+        } else {
+          this.scoreError = res?.message || 'Could not load your score.';
+        }
+      },
+      error: (err) => {
+        this.loadingScore = false;
+        console.error('Score load failed:', err);
+        this.scoreError = 'Could not load your score. Showing your local result.';
+      },
+    });
+  }
+
+  // ── NEW: converts the API JSON into the shape the screen already uses ──
+  // ⚠ PLACEHOLDER: assumes data = { overall_score: 72, sections: { key: percent } }
+  // (the shape the email code used). Fix after checking the real output of
+  // SELECT dbo.fn_get_assessment_score(1);
+  private mapApiToSummary(d: any): { total: number; max: number; rows: ScoreRow[] } {
+    const local = this.state.computeScores();   // gives section keys, labels, yes/total
+    const rows: ScoreRow[] = local.rows.map((r) => {
+      const p = Number(d.sections?.[r.key] ?? 0);
+      return { ...r, score: p >= 70 ? 2 : p >= 40 ? 1 : 0 };   // ⚠ thresholds: match your own rules
+    });
+    return { total: Number(d.overall_score ?? 0), max: 100, rows };
+  }
+
+  // ⬅ CHANGED: uses the API result when we have it, otherwise the local calculation
   get scoreSummary() {
-    return this.state.computeScores();
+    return this.apiSummary ?? this.state.computeScores();
   }
 
   get pct(): number {
@@ -242,18 +291,34 @@ export class Score implements OnInit, OnDestroy {
     }, 3200);
   }
 
+  // ⬅ CHANGED: now calls the real backend instead of a fake timer.
+  // The backend uses the email saved at contact time, so no email is sent from here.
   reportToast(): void {
     if (this.emailSending) return;
+
+    const assId = this.state.getAssId();    // ⚠ same name check as above
+    if (!assId) {
+      this.showToast('Missing assessment details. Please start again.');
+      return;
+    }
+
     this.emailSending = true;
-    setTimeout(() => {
-      this.emailSending = false;
-      this.emailSent = true;
-      this.mailBannerOn = true;
-      if (this.mailBannerTimer) clearTimeout(this.mailBannerTimer);
-      this.mailBannerTimer = setTimeout(() => {
-        this.mailBannerOn = false;
-      }, 9000);
-    }, 900);
+    this.scoreService.sendReportEmail(assId).subscribe({
+      next: () => {
+        this.emailSending = false;
+        this.emailSent = true;
+        this.mailBannerOn = true;
+        if (this.mailBannerTimer) clearTimeout(this.mailBannerTimer);
+        this.mailBannerTimer = setTimeout(() => {
+          this.mailBannerOn = false;
+        }, 9000);
+      },
+      error: (err) => {
+        console.error('Email report failed:', err);
+        this.emailSending = false;
+        this.showToast('Could not send the report. Please try again.');
+      },
+    });
   }
 
   dismissMailBanner(): void {

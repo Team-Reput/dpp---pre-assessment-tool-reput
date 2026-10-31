@@ -25,6 +25,12 @@
     </div>
     <div class="panel" id="panel">
       <div class="screen enter">
+                @if (loadingScore) {
+          <div class="tiny">Calculating your score…</div>
+        }
+        @if (scoreError) {
+          <div class="tiny" style="color:#b3261e">{{ scoreError }}</div>
+        }
         <div class="result-hero">
           <div class="result-head">
             <div class="gauge-wrap">
