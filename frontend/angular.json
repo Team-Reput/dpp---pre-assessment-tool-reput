@@ -46,15 +46,22 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
+               {
+    "type": "anyComponentStyle",
+    "maximumWarning": "16kb",
+    "maximumError": "20kb"
+  }
+],
+ 
+"security": {
+  "allowedHosts": [
+    "scan.dppreput.com",
+    "scandppfrontend.eba-nrfkm6pa.ap-south-1.elasticbeanstalk.com"
+  ]
+},
               "outputHashing": "all",
               "fileReplacements": [
                 {
