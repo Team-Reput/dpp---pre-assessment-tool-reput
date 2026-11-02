@@ -1,0 +1,32 @@
+# ---- Stage 1: Build ----
+FROM node:22-alpine AS build
+ 
+WORKDIR /app
+ 
+COPY package*.json ./
+ 
+RUN npm ci
+ 
+COPY . .
+ 
+RUN npm run build -- --configuration production
+ 
+ 
+# ---- Stage 2: Run ----
+FROM node:22-alpine AS runtime
+ 
+WORKDIR /app
+ 
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package*.json ./
+ 
+RUN npm ci --omit=dev
+ 
+ENV NODE_ENV=production
+ENV PORT=4000
+ENV HOST=0.0.0.0
+ENV HOSTNAME=scan.dppreput.com
+ 
+EXPOSE 4000
+ 
+CMD ["node", "dist/frontend/server/server.mjs"]

@@ -1,0 +1,61 @@
+:root {
+  --teal-deep: #0b4a5f;
+  --teal: #12829b;
+  --teal-bright: #19b8dc;
+  --teal-soft: #e6f4f7;
+  --sand: #d4b08c;
+  --sand-soft: #f5ece1;
+  --ink: #0f2a36;
+  --ink-muted: #5a727d;
+  --line: #d6e6ea;
+  --card: #ffffff;
+  --bg: #eef5f7;
+  --yes: #0e9f6e;
+  --no: #d97706;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 20px 50px -20px rgba(11, 74, 95, 0.18), 0 4px 12px -2px rgba(11, 74, 95, 0.06);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background:
+    radial-gradient(900px 500px at 12% -10%, rgba(25, 184, 220, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 95% 108%, rgba(212, 176, 140, 0.28), transparent 60%),
+    var(--bg);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 1120px) {
+  html {
+    scroll-padding-bottom: 140px;
+  }
+}
+
+@media print {
+  body.rv-open .app *:not(#reportView):not(#reportView *),
+  body.rv-open #shirtDock,
+  body.rv-open .toast,
+  body.rv-open #mailBanner,
+  .rv-bar {
+    display: none !important;
+  }
+  #reportView {
+    position: static !important;
+    display: block !important;
+  }
+}

@@ -1,0 +1,393 @@
+<div class="app">
+  <header class="brandbar">
+    <div class="brandbar-left">
+      <span class="eyebrow">{{ data.eyebrow }}</span>
+      <div class="collab">
+        <span class="logo-word">
+          <svg class="drop" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+            <path d="M9 1.5C9 1.5 2 9.2 2 14.2A7 7 0 0 0 16 14.2C16 9.2 9 1.5 9 1.5Z" stroke="#fff" stroke-width="1.6"/>
+            <path d="M6 15a3 3 0 0 0 3 2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ data.brandLeft }}
+        </span>
+        <span class="x">×</span>
+        <span class="logo-word">{{ data.brandRight }}</span>
+      </div>
+    </div>
+    <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
+  </header>
+
+  <main class="card" id="card">
+    <div class="rail" id="rail" hidden></div>
+    <div class="step-meta" id="stepMeta" hidden>
+      <span id="stepCounter"></span>
+      <span class="step-tag" id="stepTag"></span>
+    </div>
+    <div class="panel" id="panel">
+      <div class="screen enter">
+                @if (loadingScore) {
+          <div class="tiny">Calculating your score…</div>
+        }
+        @if (scoreError) {
+          <div class="tiny" style="color:#b3261e">{{ scoreError }}</div>
+        }
+        <div class="result-hero">
+          <div class="result-head">
+            <div class="gauge-wrap">
+              <svg
+                width="180"
+                height="150"
+                viewBox="0 0 180 150"
+                role="img"
+                [attr.aria-label]="'Readiness ' + pct + ' percent'">
+                <g transform="rotate(135 90 90)">
+                  <circle
+                    [attr.cx]="cx"
+                    [attr.cy]="cy"
+                    [attr.r]="r"
+                    fill="none"
+                    style="stroke: var(--line-soft)"
+                    stroke-width="14"
+                    [attr.stroke-dasharray]="arc + ' ' + circ"
+                    stroke-linecap="round" />
+                  <circle
+                    [attr.cx]="cx"
+                    [attr.cy]="cy"
+                    [attr.r]="r"
+                    fill="none"
+                    [style.stroke]="band.color"
+                    style="transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1)"
+                    stroke-width="14"
+                    [attr.stroke-dasharray]="arc + ' ' + circ"
+                    [attr.stroke-dashoffset]="gaugeOffset"
+                    stroke-linecap="round" />
+                </g>
+                <text
+                  x="90"
+                  y="88"
+                  text-anchor="middle"
+                  class="gauge-score"
+                  font-size="34"
+                  [style.fill]="band.color">
+                  {{ pct }}%
+                </text>
+                <text
+                  x="90"
+                  y="108"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono, monospace"
+                  font-size="10"
+                  style="fill: var(--ink-soft)"
+                  letter-spacing="1">
+                  READINESS
+                </text>
+              </svg>
+            </div>
+            <div class="band-sub">{{ band.sub }}</div>
+                        @if (apiTotal > 0) {
+              <div class="band-scope">
+                Answered {{ apiAnswered }} of {{ apiTotal }} questions · {{ apiYes }} Yes
+              </div>
+            }
+            <div class="band-scope">
+              Scope:
+              {{
+                isSupplier
+                  ? scopeLabel + ' readiness, shareable with your brand or upstream buyers.'
+                  : 'brand / company-wide readiness, not limited to a single product.'
+              }}
+            </div>
+          </div>
+
+          <div class="hero-shirt" id="heroShirt">
+            <app-shirt-dock [inline]="true"></app-shirt-dock>
+          </div>
+        </div>
+
+        @if (isSupplier) {
+          <div class="cert-card">
+            <div class="cert-eyebrow">DPP Supplier Readiness Report · BluWin × Reput.ai</div>
+            <div class="cert-company">{{ companyName }}</div>
+            <div class="cert-line">{{ scopeLabel }} · Assessed {{ todayShort }}</div>
+            <div class="cert-line" style="margin-top:6px">
+              Readiness score:
+              <strong [style.color]="band.color">{{ pct }}%</strong>
+            </div>
+            <div class="cert-tagline">
+              Share this readiness report with brand and upstream buyers as evidence of your DPP readiness.
+            </div>
+          </div>
+        }
+
+        @if (!isSupplier && nextLevel) {
+          <div class="next-card">
+            <div class="next-eyebrow">{{ nextLevel.eyebrow }}</div>
+            <h3>{{ nextLevel.title }}</h3>
+            <p>{{ nextLevel.body }}</p>
+            <div class="pitch-btns" style="margin-top: 4px">
+              <a
+                class="btn"
+                id="refBtn"
+                [href]="data.demoUrl"
+                target="_blank"
+                rel="noopener">
+                {{ nextLevel.cta }} · Connect with our team →
+              </a>
+              <a
+                class="btn btn-outline"
+                style="border-color: rgba(255, 255, 255, 0.45); color: #fff; background: rgba(255, 255, 255, 0.12)"
+                [href]="data.reputPlatformUrl"
+                target="_blank"
+                rel="noopener">
+                Go to RePut.ai platform →
+              </a>
+            </div>
+          </div>
+        }
+
+        <div style="margin-top:18px">
+          <div class="assure">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
+              <path d="M6.8 10.3 9 12.4 13.4 7.8" stroke="#039297" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ data.assureResults }}</span>
+          </div>
+        </div>
+
+        <div class="where-card">
+          <div class="where-head">
+            <h3>{{ data.whereHeading }}</h3>
+            <p>{{ data.whereSub }}</p>
+          </div>
+          <div class="where-grid">
+            @for (r of rows; track r.key; let i = $index) {
+              <div
+                class="where-item"
+                [ngClass]="whereStatusClass(r.score)"
+                [style.animation-delay]="whereDelay(i)">
+                <div class="where-top">
+                  <span class="where-num">{{ formatNum(i) }}</span>
+                  <b>{{ r.label }}</b>
+                </div>
+                <span class="where-status">{{ whereStatusLabel(r.score) }}</span>
+                <div class="where-chips">
+                  @for (chip of whereChips(r.key); track chip) {
+                    <span>{{ chip }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          <div class="tiny">{{ data.disclaimer }}</div>
+        </div>
+
+        <div class="cta-row">
+          <button type="button" class="btn btn-outline" (click)="restart()">Retake</button>
+          @if (isSupplier) {
+            <button type="button" class="btn btn-primary" (click)="openReport()">
+              Get readiness report
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="emailBtn"
+              [class.sent]="emailSent"
+              [disabled]="emailSending"
+              (click)="reportToast()">
+              {{ emailSending ? 'Sending…' : emailSent ? '✓ Report sent' : 'Email me the full report' }}
+            </button>
+          }
+        </div>
+
+        @if (!isSupplier) {
+          <div class="pitch-card">
+            <div class="pitch-eyebrow">Go one level deeper</div>
+            <h3 class="pitch-title">Want to see a real DPP for one of your products?</h3>
+            <p class="pitch-body">
+              Contact us and we’ll create 1 DPP for you, free. It’s the easiest way to see what yours
+              could look like, and we’ll walk you through every step.
+            </p>
+            <div class="free-ribbon">
+              <span class="free-gift" aria-hidden="true">★</span>
+              <span>
+                <b>1 DPP is on us.</b> Book a demo and your first Digital Product Passport is free to create.
+              </span>
+            </div>
+            <div class="pitch-btns">
+              <a class="btn btn-primary" [href]="data.reputUrl" target="_blank" rel="noopener">
+                Contact us
+              </a>
+              <a
+                class="btn btn-outline"
+                id="demoBtn"
+                [class.booked]="state.demoBooked()"
+                [href]="data.demoUrl"
+                target="_blank"
+                rel="noopener"
+                (click)="bookDemo()">
+                {{ state.demoBooked() ? '✓ Demo requested' : 'Book a demo' }}
+              </a>
+            </div>
+            @if (state.demoBooked()) {
+              <div class="demo-win pop" id="demoWin" role="status">
+                <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                  <circle cx="12" cy="12" r="11" fill="#fff"/>
+                  <path
+                    d="M6.8 12.4l3.6 3.6 6.8-7.2"
+                    fill="none"
+                    stroke="#0a8f6a"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="tick"/>
+                </svg>
+                <div>
+                  <b>Congrats! 1 DPP is free for you to create.</b>
+                  <span>Our team will reach out to set it up with you.</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="pitch-card">
+            <div class="pitch-eyebrow">We’ll hand-hold you</div>
+            <h3 class="pitch-title">Missing some of the data your buyers will ask for?</h3>
+            <p class="pitch-body">
+              We’ll sit down with you and help structure it, so you can answer brands with confidence
+              when they ask.
+            </p>
+            <div class="pitch-btns">
+              <a class="btn btn-primary" [href]="data.reputUrl" target="_blank" rel="noopener">
+                Talk to us
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </main>
+
+  <div class="hashtag-row" id="hashtagRow">#BluWin &nbsp; #DPP</div>
+</div>
+
+<!-- Mail Banner -->
+<div id="mailBanner" role="status" [class.on]="mailBannerOn">
+  <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+    <circle cx="12" cy="12" r="11" fill="#fff"/>
+    <path
+      d="M6.8 12.4l3.6 3.6 6.8-7.2"
+      fill="none"
+      stroke="#0a8f6a"
+      stroke-width="2.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+  </svg>
+  <div class="mb-txt">
+    <b>Full report sent</b>
+    <span>On its way to {{ contactEmail }}</span>
+  </div>
+  <button type="button" class="mb-view" (click)="openReport()">View report</button>
+  <button type="button" class="mb-x" aria-label="Dismiss" (click)="dismissMailBanner()">×</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite" [class.on]="toastOn">
+  {{ toastText }}
+</div>
+
+<!-- Full Report Overlay -->
+<div id="reportView" [class.on]="reportViewOn">
+  <div class="rv-bar">
+    <b>Full report</b>
+    <span>
+      <button type="button" class="btn btn-outline" (click)="downloadReport()">Download</button>
+      <button type="button" class="btn btn-outline" (click)="printReport()">Print</button>
+      <button type="button" class="btn btn-primary" (click)="closeReport()">Close</button>
+    </span>
+  </div>
+  <div class="rv-body">
+    <div class="rpt">
+      <div class="top">
+        <small>DPP Readiness Scan · BluWin × Reput.ai</small>
+        <h1>Full readiness report</h1>
+        <div class="meta">
+          {{ companyName }} · {{ contactName }} · {{ scopeLabel }} · {{ todayLong }}
+        </div>
+      </div>
+
+      <div class="score">
+        <b [style.color]="bandHexColor">{{ pct }}%</b>
+        <div>
+          <div class="lab" [style.color]="bandHexColor">DPP Readiness Score</div>
+          <p>{{ band.sub }}</p>
+        </div>
+      </div>
+
+      <h2>Section summary</h2>
+      <table>
+        <tr>
+          <th>Section</th>
+          <th>Status</th>
+          <th>Yes</th>
+        </tr>
+        @for (r of rows; track r.key) {
+          <tr>
+            <td>{{ r.label }}</td>
+            <td>
+              <span class="pill" [ngClass]="reportPillClass(r.score)">
+                {{ whereStatusLabel(r.score) }}
+              </span>
+            </td>
+            <td>{{ r.yes }}/{{ r.total }}</td>
+          </tr>
+        }
+      </table>
+
+      <h2>Your answers, section by section</h2>
+      @for (d of activeCategoriesWithDetails; track d.cat.key) {
+        <div class="sec">
+          <h3>
+            <span>{{ d.cat.label }}</span>
+            <span class="pill" [ngClass]="reportPillClass(d.row.score)">
+              {{ whereStatusLabel(d.row.score) }} · {{ d.row.yes }}/{{ d.row.total }}
+            </span>
+          </h3>
+          @for (q of d.items; track $index; let i = $index) {
+            <div class="qa">
+              <span>{{ q }}</span>
+              <i [ngClass]="d.answers[i] === true ? 'y' : d.answers[i] === false ? 'n' : 's'">
+                {{
+                  d.answers[i] === true
+                    ? 'Yes'
+                    : d.answers[i] === false
+                      ? 'No'
+                      : 'Skipped (counted as No)'
+                }}
+              </i>
+            </div>
+          }
+          <div class="where"><b>Where this usually lives:</b> {{ d.where }}</div>
+          @if (d.row.score < 2) {
+            <div class="help"><b>How we can help:</b> {{ d.help }}</div>
+          }
+        </div>
+      }
+
+      @if (!isSupplier && nextLevel) {
+        <h2>Your next level</h2>
+        <p>
+          <b>{{ nextLevel.title }}</b><br />
+          {{ nextLevel.body }}
+        </p>
+      }
+
+      <div class="free">
+        <b>1 DPP is free for you to create.</b> Book a demo with us and we’ll build your first
+        Digital Product Passport together: {{ data.reputUrl }}
+      </div>
+      <div class="tiny">{{ data.disclaimer }}</div>
+    </div>
+  </div>
+</div>

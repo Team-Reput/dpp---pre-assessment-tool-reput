@@ -1,0 +1,76 @@
+<div class="app">
+  <header class="brandbar">
+    <div class="brandbar-left">
+      <span class="eyebrow">{{ data.eyebrow }}</span>
+      <div class="collab">
+        <span class="logo-word">
+          <svg class="drop" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+            <path d="M9 1.5C9 1.5 2 9.2 2 14.2A7 7 0 0 0 16 14.2C16 9.2 9 1.5 9 1.5Z" stroke="#fff" stroke-width="1.6"/>
+            <path d="M6 15a3 3 0 0 0 3 2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ data.brandLeft }}
+        </span>
+        <span class="x">×</span>
+        <span class="logo-word">{{ data.brandRight }}</span>
+      </div>
+    </div>
+    <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
+  </header>
+
+  <main class="card" id="card">
+    <div class="rail" id="rail">
+      @for (seg of segments; track seg) {
+        <div
+          class="seg"
+          [class.done]="seg < stepMeta.idx"
+          [class.cur]="seg === stepMeta.idx"></div>
+      }
+    </div>
+    <div class="step-meta" id="stepMeta">
+      <span id="stepCounter">Step {{ stepMeta.idx + 1 }} / {{ stepMeta.total }}</span>
+      <span class="step-tag" id="stepTag">{{ stepMeta.tag }}</span>
+    </div>
+    <div class="panel" id="panel">
+      <div class="screen enter">
+        <h1>{{ data.heading }}</h1>
+        <p class="sub">{{ data.subtitle }}</p>
+
+        <div class="chipgrid" id="mkts">
+          @for (m of data.marketOptions; track m) {
+            <button
+              type="button"
+              class="chip-opt"
+              [class.selected]="isSelected(m)"
+              [attr.data-val]="m"
+              [attr.aria-pressed]="isSelected(m)"
+              (click)="toggleMarket(m)">
+              {{ m }}
+            </button>
+          }
+        </div>
+
+        <div style="margin-top:18px">
+          <div class="assure">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
+              <path d="M6.8 10.3 9 12.4 13.4 7.8" stroke="#039297" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ data.assureText }}</span>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button type="button" class="btn btn-ghost" (click)="onBack()">← Back</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!selectedMarkets.length"
+            (click)="onContinue()">
+            Continue →
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

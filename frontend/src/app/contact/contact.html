@@ -1,0 +1,84 @@
+<div class="app">
+  <header class="brandbar">
+    <div class="brandbar-left">
+      <span class="eyebrow">{{ data.eyebrow }}</span>
+      <div class="collab">
+        <span class="logo-word">
+          <svg class="drop" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+            <path d="M9 1.5C9 1.5 2 9.2 2 14.2A7 7 0 0 0 16 14.2C16 9.2 9 1.5 9 1.5Z" stroke="#fff" stroke-width="1.6"/>
+            <path d="M6 15a3 3 0 0 0 3 2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ data.brandLeft }}
+        </span>
+        <span class="x">×</span>
+        <span class="logo-word">{{ data.brandRight }}</span>
+      </div>
+    </div>
+    <div class="brandbar-tag">DPP<br>Readiness<br>Scan</div>
+  </header>
+
+  <main class="card" id="card">
+    <div class="rail" id="rail" hidden></div>
+    <div class="step-meta" id="stepMeta" hidden>
+      <span id="stepCounter"></span>
+      <span class="step-tag" id="stepTag"></span>
+    </div>
+    <div class="panel" id="panel">
+      <div class="screen enter">
+        <h1>{{ data.heading }}</h1>
+        <p class="sub">{{ data.subtitle }}</p>
+
+        <div class="assure">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="8.25" stroke="#039297" stroke-width="1.5"/>
+            <path d="M6.8 10.3 9 12.4 13.4 7.8" stroke="#039297" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>{{ data.assureText }}</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field" id="f-name" [class.bad]="badName">
+            <label for="c-name">{{ data.fields.name.label }}</label>
+            <input
+              type="text"
+              id="c-name"
+              [placeholder]="data.fields.name.placeholder"
+              autocomplete="name"
+              [(ngModel)]="name"
+              (input)="badName = false" />
+            <div class="err">{{ data.fields.name.err }}</div>
+          </div>
+
+          <div class="field" id="f-company" [class.bad]="badCompany">
+            <label for="c-company">{{ data.fields.company.label }}</label>
+            <input
+              type="text"
+              id="c-company"
+              [placeholder]="data.fields.company.placeholder"
+              autocomplete="organization"
+              [(ngModel)]="company"
+              (input)="badCompany = false" />
+            <div class="err">{{ data.fields.company.err }}</div>
+          </div>
+
+          <div class="field" id="f-email" [class.bad]="badEmail">
+            <label for="c-email">{{ data.fields.email.label }}</label>
+            <input
+              type="email"
+              id="c-email"
+              [placeholder]="data.fields.email.placeholder"
+              autocomplete="email"
+              [(ngModel)]="email"
+              (input)="badEmail = false" />
+            <div class="err">{{ data.fields.email.err }}</div>
+          </div>
+        </div>
+
+               <div class="nav">
+          <button type="button" class="btn btn-ghost" (click)="onBack()">← Back</button>
+          <button type="button" class="btn btn-primary" (click)="submitContact()">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
