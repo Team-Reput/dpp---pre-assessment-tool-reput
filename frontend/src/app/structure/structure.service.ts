@@ -9,8 +9,8 @@ export class StructureService {   // capital S — Angular convention for class 
  
   constructor(private http: HttpClient) {}
  
-  saveStructure(data: { ass_id: number; structure: string }): Observable<any> {
-    return this.http.post(this.apiUrl, data);
+   saveStructure(data: { ass_id: number; structure: string }): Observable<any> {
+     return this.http.post(this.apiUrl, data);
   }
 }
  
