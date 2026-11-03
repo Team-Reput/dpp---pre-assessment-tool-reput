@@ -75,6 +75,12 @@ export class Score implements OnInit, OnDestroy {
   badRefEmail = false;
   refSubmitted = false;
 
+    // "Contact us" popup
+  contactOpen = false;
+  emailCopied = false;
+  readonly teamEmail = 'admin@reput.co.in';
+  readonly reputSiteUrl = 'https://www.reput.ai/#about';
+
   // Email / report / toast / demo state
   emailSending = false;
   emailSent = false;
@@ -166,6 +172,12 @@ export class Score implements OnInit, OnDestroy {
   get band() {
     const sc = this.scoreSummary;
     return this.state.bandFor(sc.total, sc.max);
+  }
+    // First sentence only, e.g. "You're starting from a real foundation."
+  get bandFirstLine(): string {
+    const s = String(this.band?.sub ?? '').trim();
+    const m = s.match(/^.*?[.!?](?=\s|$)/);
+    return m ? m[0] : s;
   }
 
   get bandHexColor(): string {
@@ -320,7 +332,14 @@ export class Score implements OnInit, OnDestroy {
     this.emailSending = true;
     this.cdr.markForCheck();
 
-    this.scoreService.sendReportEmail(assId).subscribe({
+        // Same card that is shown on screen (null for suppliers, who don't see it)
+    const nl = !this.isSupplier ? this.nextLevel : null;
+    const nextLevelPayload = nl
+      ? { eyebrow: nl.eyebrow, title: nl.title, body: nl.body, cta: nl.cta }
+      : null;
+
+    
+    this.scoreService.sendReportEmail(assId, nextLevelPayload).subscribe({
       next: () => {
         this.emailSending = false;
         this.emailSent = true;
@@ -343,6 +362,35 @@ export class Score implements OnInit, OnDestroy {
 
   dismissMailBanner(): void {
     this.mailBannerOn = false;
+  }
+
+    openContact(): void {
+    this.contactOpen = true;
+  }
+
+  closeContact(): void {
+    this.contactOpen = false;
+  }
+
+  async copyTeamEmail(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      await navigator.clipboard.writeText(this.teamEmail);
+    } catch {
+      // Fallback for browsers that block the clipboard API
+      const t = document.createElement('textarea');
+      t.value = this.teamEmail;
+      document.body.appendChild(t);
+      t.select();
+      document.execCommand('copy');
+      t.remove();
+    }
+    this.emailCopied = true;
+    this.cdr.markForCheck();
+    setTimeout(() => {
+      this.emailCopied = false;
+      this.cdr.markForCheck();
+    }, 2000);
   }
 
   openReport(): void {

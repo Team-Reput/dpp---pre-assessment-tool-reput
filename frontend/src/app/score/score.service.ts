@@ -18,7 +18,17 @@ export class ScoreService {
 
 
   // NEW — add this method here, inside ScoreService
-  sendReportEmail(assId: number): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/email-report`, { ass_id: assId });
+  // sendReportEmail(assId: number): Observable<any> {
+  //   return this.http.post(`${environment.apiUrl}/email-report`, { ass_id: assId, next_level: nextLevel, });
+  // }
+
+    sendReportEmail(
+    assId: number,
+    nextLevel: { eyebrow: string; title: string; body: string; cta: string } | null = null
+  ): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/email-report`, {
+      ass_id: assId,
+      next_level: nextLevel,
+    });
   }
 }

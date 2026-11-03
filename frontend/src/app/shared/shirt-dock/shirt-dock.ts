@@ -1,3 +1,5 @@
+
+
 import {
   Component,
   Input,
@@ -10,6 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AssessmentStateService, SHIRT_IMG } from '../assessment-state.service';
+
 
 export const DUMMY_DATA = {
   labelLive: 'Your readiness, live',
@@ -26,7 +29,7 @@ export const DUMMY_DATA = {
 })
 export class ShirtDockComponent implements OnInit, OnDestroy {
   @Input() inline = false;
-
+  @Input() customCaption = '';
   readonly shirtImg = SHIRT_IMG;
   readonly dummy = DUMMY_DATA;
 

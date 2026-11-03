@@ -201,3 +201,38 @@
   }
 }
 
+@media (max-width: 1120px) {
+  /* Pin the dock to the left edge */
+  #shirtDock {
+    left: 8px !important;
+    right: auto !important;
+    bottom: 8px !important;
+    transform: none !important;
+    width: auto !important;
+  }
+
+  /* Stack: image on top, text underneath */
+  #shirtDock .shirt-box {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 130px;
+    padding: 10px;
+  }
+
+  #shirtDock .shirt-persp {
+    width: 90px;
+    flex: none;
+  }
+
+  #shirtDock .shirt-box p {
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #fff;
+  }
+}
