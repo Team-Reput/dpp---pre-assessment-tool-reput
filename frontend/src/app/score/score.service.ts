@@ -31,4 +31,9 @@ export class ScoreService {
       next_level: nextLevel,
     });
   }
+
+    // POST /api/demo-request
+  sendDemoRequest(assId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/demo-request`, { ass_id: assId });
+  }
 }

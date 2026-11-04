@@ -69,7 +69,7 @@ export class Identification implements OnInit {
 
   get navHint(): string {
     const left = this.items.length - this.answeredCount;
-    return left ? `${left} skipped · counted as No` : 'All answered';
+    return left ? `${left} skipped ` : 'All answered';
   }
 
   get showHelpNote(): boolean {

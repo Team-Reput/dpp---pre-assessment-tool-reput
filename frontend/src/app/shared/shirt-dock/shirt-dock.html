@@ -64,7 +64,8 @@
         </div>
       </div>
     </div>
-            <p>{{ customCaption || 'The first colours are showing. Keep going.' }}</p>
-  </div>
+          @if (inline || hasAnswered()) {
+      <p>{{ customCaption || 'The first colours are showing. Keep going.' }}</p>
+    }
 </div>
 

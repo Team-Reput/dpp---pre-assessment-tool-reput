@@ -358,7 +358,10 @@ export class Score implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
     });
+
+    
   }
+ 
 
   dismissMailBanner(): void {
     this.mailBannerOn = false;
@@ -425,8 +428,20 @@ export class Score implements OnInit, OnDestroy {
     a.remove();
   }
 
-  bookDemo(): void {
+
+
+   bookDemo(): void {
+    // Keep the existing behaviour (button changes to "✓ Demo requested")
     this.state.bookDemo();
+
+    // Save the request in the database
+    const assId = this.state.getAssId();
+    if (!assId) return;
+
+    this.scoreService.sendDemoRequest(assId).subscribe({
+      next: () => this.cdr.markForCheck(),
+      error: (err) => console.error('Demo request failed:', err),
+    });
   }
 
   restart(): void {
@@ -500,7 +515,7 @@ export class Score implements OnInit, OnDestroy {
         ${d.items
           .map(
             (q, i) =>
-              `<div class="qa"><span>${this.esc(q)}</span><i class="${d.answers[i] === true ? 'y' : d.answers[i] === false ? 'n' : 's'}">${d.answers[i] === true ? 'Yes' : d.answers[i] === false ? 'No' : 'Skipped (counted as No)'}</i></div>`
+              `<div class="qa"><span>${this.esc(q)}</span><i class="${d.answers[i] === true ? 'y' : d.answers[i] === false ? 'n' : 's'}">${d.answers[i] === true ? 'Yes' : d.answers[i] === false ? 'No' : 'Skipped'}</i></div>`
           )
           .join('')}
         <div class="where"><b>Where this usually lives:</b> ${this.esc(d.where)}</div>

@@ -6,6 +6,7 @@ import {
   OnInit,
   OnDestroy,
   effect,
+   computed,
   signal,
   inject,
   PLATFORM_ID,
@@ -41,6 +42,17 @@ export class ShirtDockComponent implements OnInit, OnDestroy {
   rx = signal<string>('0deg');
   ry = signal<string>('0deg');
 
+
+   
+
+  // true once the user has clicked Yes or No on any question
+  hasAnswered = computed(() =>
+    Object.values(this.state.categoryData()).some((c) =>
+      (c?.answers || []).some((a) => a === true || a === false)
+    )
+  );
+
+ 
   private prevPct = 0;
   private animFrameId: number | null = null;
   private platformId = inject(PLATFORM_ID);
@@ -58,6 +70,7 @@ export class ShirtDockComponent implements OnInit, OnDestroy {
       if (targetPct > fromPct && isPlatformBrowser(this.platformId)) {
         this.isBump.set(false);
         setTimeout(() => this.isBump.set(true), 10);
+      
       }
 
       this.tweenPct(fromPct, targetPct, 650);
